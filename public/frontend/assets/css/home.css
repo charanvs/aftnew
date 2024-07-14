@@ -1,0 +1,352 @@
+.small-title {
+    font-size: 0.875rem;
+    /* Adjust the font size as needed */
+  }
+
+  /* Main section styles */
+  #Main {
+    background-color: #f8f9fa;
+    /* Light background color */
+    color: #333;
+    /* Dark text color */
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  #Main .blog-card {
+    background-color: #ffffff;
+    /* White background for blog cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for cards */
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* Branches section styles */
+  #branches {
+    background-color: #6c757d;
+    /* Dark grey background color */
+    color: #ffffff;
+    /* Light text color */
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  #branches .room-card {
+    background-color: #495057;
+    /* Darker background for room cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for cards */
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  #branches .room-card .content {
+    color: #f8f9fa;
+    /* Light text color for content */
+  }
+
+  #branches .room-card .rating i {
+    color: #ffd700;
+    /* Gold color for star ratings */
+  }
+
+  /* New section styles */
+  #newSection {
+    background-color: #e9ecef;
+    /* Light grey background */
+    color: #333;
+    /* Dark text color */
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  #newSection .news-card,
+  #newSection .notification-card {
+    background-color: #ffffff;
+    /* White background for cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for cards */
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  #newSection .card-header {
+    background-color: #007bff;
+    /* Blue header background */
+    color: #ffffff;
+    /* White header text */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  #newSection .card-body {
+    padding: 10px;
+  }
+
+  .marquee-content {
+    display: block;
+    width: 100%;
+    position: absolute;
+    bottom: 100%;
+    animation: marquee 10s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% {
+      bottom: 100%;
+    }
+
+    100% {
+      bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .controls button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+
+  .controls button:focus {
+    outline: none;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+  }
+
+  .blog-style-area {
+    padding: 30px 0;
+  }
+
+  .blog-card,
+  .news-card,
+  .notification-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .blog-img img,
+  .room-card img {
+    border-radius: 8px 0 0 8px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .blog-content,
+  .news-card .card-body,
+  .notification-card .card-body,
+  .room-card .content {
+    padding: 20px;
+  }
+
+  .blog-content span {
+    font-weight: 700;
+    color: #007bff;
+  }
+
+  .blog-content h3 a,
+  .room-card .content h3 a {
+    font-family: 'Noto Sans', sans-serif;
+    color: #333;
+  }
+
+  .blog-content p,
+  .room-card .content ul {
+    color: #555;
+  }
+
+  .read-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 20px;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+
+  .read-btn:hover {
+    background: #0056b3;
+  }
+
+  .news-card .card-header,
+  .notification-card .card-header {
+    background: #007bff;
+    color: #fff;
+    font-size: 1.25em;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .marquee {
+    overflow: hidden;
+    position: relative;
+    height: 280px; /* Adjust based on your requirements */
+    background-color: #f8f9fa; /* Light background color for better contrast */
+    border: 1px solid #dee2e6; /* Border for a clean look */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding for better readability */
+  }
+
+  .marquee-content {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    animation: marquee 10s linear infinite;
+  }
+
+  .marquee-content p {
+    font-size: 1.2em; /* Larger font size */
+    font-weight: bold; /* Bold text for better readability */
+    color: #343a40; /* Darker text color */
+    margin: 10px 0; /* Margin between paragraphs */
+    padding: 5px; /* Padding for better readability */
+    background-color: #ffffff; /* White background for text */
+    border: 1px solid #dee2e6; /* Border around each notification */
+    border-radius: 5px; /* Rounded corners */
+  }
+
+  @keyframes marquee {
+    0% {
+      top: 100%;
+    }
+    100% {
+      top: -100%;
+    }
+  }
+
+  .controls button {
+    margin: 5px;
+    background-color: #007bff; /* Blue button color */
+    color: #ffffff; /* White text color */
+    border: none; /* No border */
+    padding: 5px 10px; /* Padding for buttons */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+
+  .controls button i {
+    font-size: 1.2em; /* Larger icon size */
+  }
+
+
+
+  .controls button:hover {
+    color: #0056b3;
+  }
+
+  .room-card {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .room-card .content h3 {
+    font-family: 'Noto Sans', sans-serif;
+    margin-top: 10px;
+  }
+
+  .room-card .content ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .room-card .content ul li {
+    color: #555;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    filter: invert(100%);
+  }
+
+  /* Styling for the calendar and events */
+  #calendar {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .fc-event-content {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 5px;
+  }
+
+  .fc-event-content div {
+    margin-bottom: 5px;
+  }
+
+  .show-pdf {
+    color: white;
+    background-color: #007bff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .show-pdf:hover {
+    background-color: #0056b3;
+  }
+
+  .fc-day-sat,
+  .fc-day-sun {
+    background-color: #f5f5f5;
+  }
+
+  .legend {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .legend span {
+    display: inline-block;
+    margin-right: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .legend .cause-list {
+    background-color: green;
+  }
+
+  .legend .holidays {
+    background-color: blue;
+  }
+
+  .legend .other {
+    background-color: gray;
+  }
+
+  .fc-daygrid-event-dot {
+    white-space: normal;
+  }
