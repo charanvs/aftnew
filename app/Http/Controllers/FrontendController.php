@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\Bench;
 use App\Models\Vacancy;
 use App\Models\Gallery;
+use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,6 +46,12 @@ class FrontendController extends Controller
     {
         $data = Vacancy::all();
         return view('frontend.recruitment', compact('data'));
+    }
+    
+    public function Rules()
+    {
+        $data = Rule::all();
+        return view('frontend.acts_rules', compact('data'));
     }
 
     public function OrganizationChart()

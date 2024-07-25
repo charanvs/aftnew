@@ -1,14 +1,14 @@
 @extends('frontend.main_master')
 
 @section('title')
-  AFT-PB | Vacancies
+  AFT-PB | Acts and Rules
 @endsection
 
 @section('main')
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Current Vacancies</h2>
+  <h2 class="text-center mb-4">Acts and Rules</h2>
   <div class="card">
     <div class="card-body">
       <div class="table-responsive">
@@ -17,20 +17,16 @@
             <tr>
               <th>Title</th>
               <th>Description</th>
-              <th>Start Date</th>
-              <th>End Date</th>
               <th>View</th>
             </tr>
           </thead>
           <tbody>
-            @foreach ($data as $vacancy)
+            @foreach ($data as $rule)
               <tr>
-                <td>{{ $vacancy->title }}</td>
-                <td>{{ $vacancy->description }}</td>
-                <td>{{ $vacancy->start_date }}</td>
-                <td>{{ $vacancy->end_date }}</td>
+                <td>{{ $rule->title }}</td>
+                <td>{{ $rule->description }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pdfModal" data-pdf="{{ asset('upload/vacancy/' . $vacancy->file) }}">
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pdfModal" data-pdf="{{ asset('upload/acts/' . $rule->file) }}">
                     View
                   </button>
                 </td>

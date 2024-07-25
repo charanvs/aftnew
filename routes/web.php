@@ -28,7 +28,7 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $user = Auth::user();
     return view('admin.index', compact('user'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['web', 'auth', 'verified'])->name('dashboard');
 
 
 // Admin All Route
@@ -81,6 +81,7 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/members', 'Members')->name('members.page');
     Route::get('/daily_cause_list', 'DailyCauseList')->name('daily_cause_list.page');
     Route::get('/vacancies', 'Vacancies')->name('vacancies.page');
+    Route::get('/acts_rules', 'Rules')->name('rules.page');
     Route::get('/home/test', 'HomeTest')->name('home.test');
     Route::get('/organization/chart', 'OrganizationChart')->name('organization.chart');
 });

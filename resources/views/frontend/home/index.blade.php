@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/home.css') }}" type="text/css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans:wght@400;700&display=swap"
   rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Blog Style Area -->
 <div class="blog-style-area">
@@ -24,7 +25,6 @@
                   </a>
                 </div>
               </div>
-
               <div class="col-lg-7 col-md-8 p-0">
                 <div class="blog-content">
                   <span>About AFT</span>
@@ -69,9 +69,7 @@
                     <div class="info">
                       <h4 class="title-text">
                         <a href="blog-details.html">
-                          <span class="text-bold">
-                            {{ $item->name }}
-                          </span>
+                          <span class="text-bold">{{ $item->name }}</span>
                           <br>
                           {{ $item->salutation }}
                         </a>
@@ -87,7 +85,7 @@
       </div>
     </section>
 
-    <!-- New section for What's New, Notifications, and Tenders -->
+    <!-- New section for What's New, Notifications, Blog Category, and Tenders -->
     <section id="newSection">
       <div class="row">
         <div class="col-lg-7">
@@ -108,136 +106,125 @@
               </div>
             </div>
           </div>
-
-          <section id="branches">
-            <div class="container">
-                <div class="section-title text-center pb-5">
-                    <h2>Regional Benches</h2>
-                  </div>
-              <div id="branchesCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                  @foreach ($bench->chunk(3) as $benchChunk)
-                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                      <div class="row">
-                        @foreach ($benchChunk as $bench)
-                          <div class="col-lg-4 col-md-6">
-                            <div class="room-card">
-                              <a href="">
-                                <img src="{{ asset($bench->image ?: 'default-image.jpg') }}" alt="Image">
-                              </a>
-                              <div class="content">
-                                <h3><a href="room-details.html" class="text-white">{{ $bench->bench_name }}</a></h3>
-                                <ul>
-                                  <li class="text-color">{{ $bench->description }}</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        @endforeach
-                      </div>
-                    </div>
-                  @endforeach
-                </div>
-                <!-- Carousel controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#branchesCarousel"
-                  data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#branchesCarousel"
-                  data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-              </div>
-            </div>
-          </section>
         </div>
 
         <div class="col-lg-5">
-          <div class="notification-card">
-            <div class="card-header">Notifications</div>
-            <div class="card-body">
-              <div class="marquee" id="marquee2">
-                <div class="marquee-content bg-info" id="marqueeContent2">
-                  <p>Notification 1: Lorem ipsum dolor sit amet.</p>
-                  <p>Notification 2: Consectetur adipiscing elit.</p>
-                  <p>Notification 3: Integer molestie lorem at massa.</p>
-                  <!-- Add more notifications as needed -->
-                </div>
-              </div>
-              <div class="controls">
-                <button id="play2"><i class="fas fa-play"></i></button>
-                <button id="stop2"><i class="fas fa-stop"></i></button>
-              </div>
+          <div class="services-bar-widget">
+            <h3 class="title">Handy Links</h3>
+            <div class="side-bar-categories">
+              <ul>
+                <li>
+                  <a href="{{ route('judgements.page') }}" data-text="Judgements">Judgements</a>
+                </li>
+                <li>
+                  <a href="{{ route('cases.page') }}" data-text="Daily Orders">Daily Orders</a>
+                </li>
+                <li>
+                  <a href="#" data-text="Gallery">Gallery</a>
+                </li>
+                <li>
+                  <a href="#" data-text="Notification">Notification</a>
+                </li>
+                <li>
+                  <a href="{{ route('vacancies.page') }}" data-text="Vacancies">Vacancies</a>
+                </li>
+              </ul>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <div class="notification-card">
-            <div class="card-header">Tenders</div>
-            <div class="card-body">
-              <div class="marquee" id="marquee3">
-                <div class="marquee-content" id="marqueeContent3">
-                  <p>Notification 1: Lorem ipsum dolor sit amet.</p>
-                  <p>Notification 2: Consectetur adipiscing elit.</p>
-                  <p>Notification 3: Integer molestie lorem at massa.</p>
-                  <!-- Add more notifications as needed -->
+    <!-- Section for Regional Benches -->
+    <section id="branches">
+      <div class="col-lg-12">
+        <div class="container">
+          <div class="section-title text-center pb-5">
+            <h2>Regional Benches</h2>
+          </div>
+          <div id="branchesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              @foreach ($bench->chunk(3) as $benchChunk)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                  <div class="row">
+                    @foreach ($benchChunk as $bench)
+                      <div class="col-lg-4 col-md-6">
+                        <div class="room-card">
+                          <a href="">
+                            <img src="{{ asset($bench->image ?: 'default-image.jpg') }}" alt="Image">
+                          </a>
+                          <div class="content">
+                            <h3><a href="room-details.html" class="text-white">{{ $bench->bench_name }}</a></h3>
+                            <ul>
+                              <li class="text-color">{{ $bench->description }}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+                  </div>
                 </div>
-              </div>
-              <div class="controls">
-                <button id="play3"><i class="fas fa-play"></i></button>
-                <button id="stop3"><i class="fas fa-stop"></i></button>
-              </div>
+              @endforeach
             </div>
+            <!-- Carousel controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#branchesCarousel"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#branchesCarousel"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
       </div>
     </section>
   </div>
 </div>
-</div>
+
 <!-- Section for Gallery and Daily Cause List-->
 <section id="Last">
   <div class="row">
     <div class="col-lg-7 pt-5 pb-5">
-        <div class="section-title text-center pb-5">
-            <h2>Gallery</h2>
-          </div>
-        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @foreach ($gallery->chunk(3) as $index => $galleryChunk)
-                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                    <div class="row">
-                        @foreach ($galleryChunk as $item)
-                        <div class="col-lg-4 col-md-6">
-                            <div class="room-card">
-                                <a href="">
-                                    <img src="{{ asset($item->image ?: 'default-image.jpg') }}" alt="Image">
-                                </a>
-                                <div class="content">
-                                    <h3><a href="room-details.html" class="text-white">{{ $item->title }}</a></h3>
-                                    <ul>
-                                        <li class="text-color">{{ $item->description }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
+      <div class="section-title text-center pb-5">
+        <h2>Gallery</h2>
+      </div>
+      <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          @foreach ($gallery->chunk(3) as $index => $galleryChunk)
+            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+              <div class="row">
+                @foreach ($galleryChunk as $item)
+                  <div class="col-lg-4 col-md-6">
+                    <div class="room-card">
+                      <a href="">
+                        <img src="{{ asset($item->image ?: 'default-image.jpg') }}" alt="Image">
+                      </a>
+                      <div class="content">
+                        <h3><a href="room-details.html" class="text-white">{{ $item->title }}</a></h3>
+                        <ul>
+                          <li class="text-color">{{ $item->description }}</li>
+                        </ul>
+                      </div>
                     </div>
-                </div>
+                  </div>
                 @endforeach
+              </div>
             </div>
-            <!-- Carousel controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+          @endforeach
         </div>
-
+        <!-- Carousel controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
     </div>
 
     <div class="col-lg-5 pt-5 pb-5">
@@ -245,7 +232,6 @@
         <h2>Daily Cause List</h2>
       </div>
       <div class="card">
-
         <div class="card-body">
           <!-- Calendar -->
           <div id='calendar'></div>
@@ -255,7 +241,6 @@
             <span class="other">Other</span>
           </div>
           <iframe id="pdfFrame" style="display:none; width:100%; height:600px;" frameborder="0"></iframe>
-
         </div>
       </div>
     </div>
@@ -263,7 +248,8 @@
 </section>
 <!-- Modal to display PDF -->
 
-
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const marquee1 = document.getElementById('marqueeContent1');

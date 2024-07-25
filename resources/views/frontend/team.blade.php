@@ -5,7 +5,7 @@
 @endsection
 
 <!-- Team Area Three -->
-<div class="team-area-three pt-100 pb-70">
+<div class="team-area-three pt-10 pb-10">
   <div class="container">
     <div class="section-title text-center">
       <span class="sp-color">Members</span>
@@ -13,7 +13,7 @@
     </div>
 
 
-    <div class="row justify-content-center pt-45">
+    <div class="row justify-content-center pt-15">
       <div class="col-lg-4 col-md-6">
         <div class="team-item">
           <a href="team.html">

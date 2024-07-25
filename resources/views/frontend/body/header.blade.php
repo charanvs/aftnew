@@ -1,57 +1,59 @@
 <style>
     .inner-title {
-        background: rgba(0, 0, 0, 0.5);
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-        color: #fff;
-      }
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      color: #fff;
+    }
 
-      .inner-title h3 {
-        font-size: 36px;
-        margin: 10px 0;
-        color: #ffd700; /* Golden color */
-        font-weight: bold;
-        text-transform: uppercase;
-      }
+    .inner-title h3 {
+      font-size: 36px;
+      margin: 10px 0;
+      color: #ffd700;
+      /* Golden color */
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
-      .breadcrumb {
-        padding: 0;
-        margin: 0 0 10px;
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fff;
-      }
+    .breadcrumb {
+      padding: 0;
+      margin: 0 0 10px;
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
 
-      .breadcrumb li {
-        font-size: 16px;
-        margin-right: 10px;
-      }
+    .breadcrumb li {
+      font-size: 16px;
+      margin-right: 10px;
+    }
 
-      .breadcrumb li + li:before {
-        padding: 0 5px;
-        color: #fff;
-        content: "/\00a0";
-      }
+    .breadcrumb li+li:before {
+      padding: 0 5px;
+      color: #fff;
+      content: "/\00a0";
+    }
 
-      .breadcrumb li a {
-        color: #ffd700; /* Golden color */
-        text-decoration: none;
-      }
+    .breadcrumb li a {
+      color: #ffd700;
+      /* Golden color */
+      text-decoration: none;
+    }
 
-      .breadcrumb li a:hover {
-        color: #ff8c00; /* Dark orange */
-        text-decoration: underline;
-      }
+    .breadcrumb li a:hover {
+      color: #ff8c00;
+      /* Dark orange */
+      text-decoration: underline;
+    }
 
-      .carousel-caption {
-        bottom: 30%;
-      }
-
-</style>
-<header class="top-header top-header-bg py-3">
+    .carousel-caption {
+      bottom: 30%;
+    }
+  </style>
+  <header class="top-header top-header-bg py-3">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-3 col-md-4 mb-2 mb-md-0">
@@ -68,20 +70,24 @@
           </script>
           <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         </div>
+        @php
+          use App\Models\Bench;
+          $active = Bench::where('id', '6')->first();
+        @endphp
         <div class="col-lg-9 col-md-8">
           <div class="header-right d-flex flex-column flex-md-row justify-content-md-end text-center text-md-left">
             <ul class="list-unstyled mb-0 d-flex flex-column flex-md-row">
               <li class="mb-2 mb-md-0 mr-md-3">
                 <i class='bx bx-home-alt mr-1'></i>
-                <a href="#" class="text-decoration-none">West Block-VIII, R.K.Puram, New Delhi</a>
+                <a href="#" class="text-decoration-none">{{ $active->address }}</a>
               </li>
               <li class="mb-2 mb-md-0 mr-md-3">
                 <i class='bx bx-phone-call mr-1'></i>
-                <a href="tel:+91-(123)-456-7890" class="text-decoration-none">+1 (123) 456 7890</a>
+                <a href="" class="text-decoration-none">{{ $active->phone_no }}</a>
               </li>
               <li>
                 <i class='bx bx-envelope mr-1'></i>
-                <a href="mailto:pbnewdelhi@mail.com" class="text-decoration-none">pbnewdelhi@mail.com</a>
+                <a href="mailto:pbnewdelhi@mail.com" class="text-decoration-none">{{ $active->emailid }}</a>
               </li>
             </ul>
           </div>
@@ -90,34 +96,13 @@
     </div>
   </header>
 
-  <!-- Slider for Main Header Images -->
-<div id="headerCarousel" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{{ asset('frontend/assets/img/inner-banner/inner-banner3.jpg') }}" class="d-block w-100" alt="Image 1">
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('frontend/assets/img/inner-banner/inner-banner2.jpg') }}" class="d-block w-100" alt="Image 2">
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('frontend/assets/img/inner-banner/home.jpg') }}" class="d-block w-100" alt="Image 3">
-      </div>
-    </div>
-    <a class="carousel-control-prev" href="#headerCarousel" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#headerCarousel" role="button" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
-
-    <!-- Inner Title -->
-    <div class="carousel-caption d-none d-md-block">
+  <!-- Breadcrumb Section -->
+  <div class="breadcrumb-section py-3">
+    <div class="container">
       <div class="inner-title">
         <ul class="breadcrumb">
           <li><a href="{{ url('/') }}">Home</a></li>
-          <li><a href="#">AFT PB</a></li>
+          <li id="main-menu-value">AFT PB</li>
           <li id="selected-menu-value"></li>
         </ul>
         <h3>AFT PB</h3>
@@ -136,9 +121,9 @@
     </div>
 
     <!-- Menu For Desktop Device -->
-    <div class="main-nav nav-three">
-      <div class="container">
-        <nav class="navbar navbar-expand-md nav-danger">
+    <div class="main-nav">
+      <div class="container mean-container">
+        <nav class="navbar navbar-expand-md navbar-danger">
           <a class="navbar-brand" href="{{ route('home') }}">
             <img src="{{ asset('frontend/assets/img/inner-banner/logo.png') }}" class="logo-two" alt="Logo">
           </a>
@@ -193,100 +178,33 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="restaurant.html" class="nav-link" data-text="Review Cases Of Regional Branches">
+                    <a href="" class="nav-link" data-text="Review Cases Of Regional Branches">
                       Review Cases Of Regional Branches
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="reservation.html" class="nav-link" data-text="Large Bench Circulars">
+                    <a href="" class="nav-link" data-text="Large Bench Circulars">
                       Large Bench Circulars
                     </a>
                   </li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link" data-text="Regional Benches">
-                  Regional Benches
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item">
-                    <a href="book.html" class="nav-link" data-text="Chandigarh">
-                      Chandigarh
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="team.html" class="nav-link" data-text="Chennai">
-                      Chennai
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Guwhati">
-                      Guwhati
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Jabalpur">
-                      Jabalpur
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Jaipur">
-                      Jaipur
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Kochi">
-                      Kochi
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Kolkata">
-                      Kolkata
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Lucknow">
-                      Lucknow
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Mumbai">
-                      Mumbai
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Srinagar">
-                      Srinagar
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                  <a href="#" class="nav-link" data-text="Regional Benches">
+                    Regional Benches
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="nav-item">
+                      <a href="" class="nav-link" data-text="Chandigarh">
+                        Chandigarh
+                      </a>
+                    </li>
+                  </ul>
+                </li>
               <li class="nav-item">
-                <a href="#" class="nav-link" data-text="Act & Rules">
-                  Act & Rules
+                  <a href="{{ route('rules.page') }}" class="nav-link {{ isActiveRoute('rules.page') }}" data-text="Act & Rules">
+                  Acts & Rules
                 </a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item">
-                    <a href="book.html" class="nav-link" data-text="AFT Act & Rules">
-                      AFT Act & Rules
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="team.html" class="nav-link" data-text="Army Act & Rules">
-                      Army Act & Rules
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="faq.html" class="nav-link" data-text="Air Force Act & Rules">
-                      Air Force Act & Rules
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="restaurant.html" class="nav-link" data-text="Navy Act & Rules">
-                      Navy Act & Rules
-                    </a>
-                  </li>
-                </ul>
               </li>
               <li class="nav-item">
                 <a href="{{ route('vacancies.page') }}" class="nav-link {{ isActiveRoute('vacancies.page') }}" data-text="Vacancies">
@@ -323,7 +241,7 @@
       }
 
       // Event listener for menu item clicks
-      $(".nav-link").click(function() {
+      $(".nav-link, .services-bar-widget .side-bar-categories a").click(function() {
         // Check if the clicked element is a sub-menu item or main menu item
         var subMenuText = $(this).data("text");
         var mainMenuText = $(this).closest('.dropdown-menu').siblings('.nav-link').data("text") || subMenuText;

@@ -21,17 +21,20 @@ class DiaryController extends Controller
 
         if ($request->has('caseno') && !empty($request->caseno)) {
             $query = CaseRegistration::join('scrutinies as s', 'case_registrations.sid', '=', 's.id')
-                ->where('case_registrations.registration_no', 'LIKE', '%' . $request->caseno . '%');
-        }
+                ->where('case_registrations.registration_no', 'LIKE', '%' . $request->caseno . '%')
+                ->select('s.*', 'case_registrations.registration_no as registration_no');
+        } else {
+            if ($request->has('diaryno') && $request->diaryno != '') {
+                $query->join('applicants', 'scrutinies.id', '=', 'applicants.sid')
+                    ->where('scrutinies.diary_no', 'LIKE', '%' . $request->diaryno . '%')
+                    ->select('scrutinies.*', 'applicants.name as name');
+            }
 
-        if ($request->has('diaryno') && $request->diaryno != '') {
-            $query->join('applicants', 'scrutinies.id', '=', 'applicants.sid')
-                ->where('scrutinies.diary_no', 'LIKE', '%' . $request->diaryno . '%');
-        }
-
-        if ($request->has('applicant') && !empty($request->applicant)) {
-            $query = Applicant::join('scrutinies as s', 'applicants.sid', '=', 's.id')
-                ->where('applicants.name', 'LIKE', '%' . $request->applicant . '%');
+            if ($request->has('applicant') && !empty($request->applicant)) {
+                $query = Applicant::join('scrutinies as s', 'applicants.sid', '=', 's.id')
+                    ->where('applicants.name', 'LIKE', '%' . $request->applicant . '%')
+                    ->select('s.*', 'applicants.name as name');
+            }
         }
 
         $cases = $query->paginate(10);
@@ -39,12 +42,32 @@ class DiaryController extends Controller
         return response()->json($cases);
     }
 
+
+
     public function ShowDiaryData(Request $request)
     {
+        // Find the Scrutiny record by the provided ID
         $diary = Scrutiny::findOrFail($request->id);
-        $notifications = Notification::where('sid', $request->id)->get();
 
-        // Adjust this part according to your actual database structure
+        // Find notifications that are associated with the Scrutiny record's ID
+        $notifications = Notification::where('sid', $diary->id)->get();
+
+        // Format notifications data
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'sid' => $notification->sid,
+                'defect' => $notification->defect,
+                'rectified_by' => $notification->rectified_by,
+                'nature' => $notification->nature,
+                'time_granted' => $notification->time_granted,
+                'rectified' => $notification->rectified,
+                'created_at' => $notification->created_at,
+                'updated_at' => $notification->updated_at,
+            ];
+        });
+
+        // Prepare the data to be returned
         $data = [
             'diaryno' => $diary->diary_no,
             'nature_of_doc' => $diary->nature_of_doc,
@@ -61,9 +84,10 @@ class DiaryController extends Controller
             'nc_observations' => $diary->not_completed_observations,
             'no_of_applicants' => $diary->no_of_applicants,
             'no_of_respondents' => $diary->no_of_respondents,
-            'notifications' => $notifications, // Add notifications to the response data
+            'notifications' => $formattedNotifications, // Add formatted notifications to the response data
         ];
 
+        // Return the data as a JSON response
         return response()->json($data);
     }
 }

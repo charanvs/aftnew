@@ -442,7 +442,7 @@ Navbar Area
 
 .main-nav {
   position: inherit;
-  background-color: #ffffff;
+  background-color: #3D5A80 ;
   top: 0;
   left: 0;
   z-index: inherit;
@@ -457,11 +457,11 @@ Navbar Area
 }
 
 .main-nav nav .navbar-nav .nav-item:hover a, .main-nav nav .navbar-nav .nav-item .active {
-  color: #B56952 !important;
+  color: #1B2132 !important;
 }
 
 .main-nav nav .navbar-nav .nav-item a {
-    color: #000000;
+    color: #EDF2F7;
     text-decoration: none;
     font-weight: 700;
     padding: 5px 10px;
@@ -482,7 +482,7 @@ Navbar Area
 }
 
 .main-nav nav .navbar-nav .nav-item a.active {
-  color: #B56952 !important;
+  color: #FFD54F     !important;
 }
 
 .main-nav nav .navbar-nav .nav-item a .active::before {
@@ -838,7 +838,7 @@ Navbar Area
 
 .sticky-nav .main-nav {
   top: 0;
-  background-color: #ffffff;
+  background-color: #6B705C;
   position: fixed;
   z-index: 9999;
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -847,7 +847,7 @@ Navbar Area
 
 .sticky-nav .nav-two {
   top: 0;
-  background-color: #ffffff;
+  background-color: #3E2723;
   position: fixed;
   z-index: 9999;
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);

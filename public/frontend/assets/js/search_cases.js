@@ -5,6 +5,7 @@ var truncateText = function (text, maxLength) {
         return text;
     }
 };
+
 function getCaseType(caseType) {
     switch (caseType) {
         case "1":
@@ -45,6 +46,7 @@ $(document).ready(function () {
     $(".default-btn.btn-bg-three.border-radius-5").click(function (event) {
         clearTableContents();
     });
+
     function fetchJudgements(
         baseUrl,
         tableId,
@@ -208,7 +210,7 @@ $(document).ready(function () {
                         ${detailData.interim_judgements
                             .map((judgement) => {
                                 var year = detailData.dor.split("-")[2];
-                              
+
                                 var case_type = getCaseType(
                                     detailData.case_type
                                 );
@@ -235,7 +237,6 @@ $(document).ready(function () {
         const pdfUrl = generatePdfRoute.replace(":id", detailData.id);
         const modalFooter = `
             <button id="printButton" class="btn btn-primary">Print</button>
-            <a href="${pdfUrl}" id="pdfButton" class="btn btn-secondary">Download PDF</a>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         `;
 
@@ -256,16 +257,53 @@ $(document).ready(function () {
     $(document).on("click", "#pdfButton", handlePdfButtonClick);
 
     function printModalContent() {
+        const modalContent = document.querySelector(
+            "#myModal .modal-body"
+        ).innerHTML;
+        const modalTitle = $("#myModalLabel").text();
         const printWindow = window.open("", "_blank");
         printWindow.document.write(`
             <html>
             <head>
                 <title>Print</title>
-                <style>body { text-align: center; } .container { margin: 0 auto; width: 80%; }</style>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                    }
+                    .container {
+                        margin: 0 auto;
+                        width: 80%;
+                    }
+                    .row {
+                        display: flex;
+                        flex-wrap: wrap;
+                        margin-bottom: 20px;
+                    }
+                    .col-md-6 {
+                        flex: 0 0 50%;
+                        max-width: 50%;
+                    }
+                    .col-md-12 {
+                        flex: 0 0 100%;
+                        max-width: 100%;
+                    }
+                    h5 {
+                        font-size: 18px;
+                        margin-bottom: 10px;
+                    }
+                    p {
+                        margin: 5px 0;
+                    }
+                    .btn {
+                        display: none;
+                    }
+                </style>
             </head>
             <body>
-                <h1>${$("#myModalLabel").text()}</h1>
-                ${document.querySelector("#myModal .modal-body").innerHTML}
+                <h1>${modalTitle}</h1>
+                <div class="container">
+                    ${modalContent}
+                </div>
             </body>
             </html>
         `);
@@ -278,8 +316,8 @@ $(document).ready(function () {
 
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
-           // url: "/cases/search/show/" + id, // Adjust this URL according to your route
-            url : showUrl + "?id=" + id,
+            // url: "/cases/search/show/" + id, // Adjust this URL according to your route
+            url: showUrl + "?id=" + id,
             type: "GET",
             dataType: "json",
             success: function (detailData) {
@@ -294,7 +332,7 @@ $(document).ready(function () {
     function getFilters() {
         return {
             fileno: $("#fileno").val(),
-            year: $("#year").val(),
+            // year: $("#year").val(),
             partyname: $("#partyname").val(),
             advocate: $("#advocate").val(),
             casetype: $("#casetype").val(),
@@ -306,9 +344,9 @@ $(document).ready(function () {
     $("#filterButtonFileNumber").click(function () {
         var filters = {};
         filters.fileno = $("#fileno").val();
-        filters.year = $("#year").val();
-        var url = baseUrl + "?fileno=" + filters.fileno + "&year="+filters.year;
-       // var url = `/cases/search/all?fileno=${filters.fileno}&year=${filters.year}`;
+        //  filters.year = $("#year").val();
+        var url = baseUrl + "?fileno=" + filters.fileno;
+        // var url = `/cases/search/all?fileno=${filters.fileno}&year=${filters.year}`;
         var headers = ["S No", "Reg No", "Year", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -338,7 +376,7 @@ $(document).ready(function () {
         var filters = {};
         filters.partyname = $("#partyname").val();
         var url = baseUrl + "?partyname=" + filters.partyname;
-      //  var url = `/cases/search/all?partyname=${filters.partyname}`;
+        //  var url = `/cases/search/all?partyname=${filters.partyname}`;
         var headers = ["S No", "Reg No", "Applicant", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -446,14 +484,8 @@ $(document).ready(function () {
 
         filters.casedate = formatInputDate(filters.casedate);
         var url = baseUrl + "?casedate=" + filters.casedate;
-     //   var url = `/cases/search/all?casedate=${filters.casedate}`;
-        var headers = [
-            "S No",
-            "Reg No",
-            "Date Decision",
-            "Petitioner",
-            "Action",
-        ];
+        //   var url = `/cases/search/all?casedate=${filters.casedate}`;
+        var headers = ["S No", "Reg No", "Next Date", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `
                 <td class="regno-cell">${item.registration_no}</td>
@@ -482,7 +514,7 @@ $(document).ready(function () {
         var filters = {};
         filters.subject = $("#subject").val();
         var url = baseUrl + "?subject=" + filters.subject;
-     //   var url = `/cases/search/all?subject=${filters.subject}`;
+        //   var url = `/cases/search/all?subject=${filters.subject}`;
         var headers = ["S No", "Reg No", "Subject", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `

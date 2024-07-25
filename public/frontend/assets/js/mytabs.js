@@ -1,5 +1,4 @@
-
-    var truncateText = function (text, maxLength) {
+var truncateText = function (text, maxLength) {
     if (text.length > maxLength) {
         return text.substring(0, maxLength) + "...";
     } else {
@@ -146,8 +145,8 @@ $(document).ready(function () {
 
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
-          //   url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
-            url : showUrl + "?id=" + id,
+            //   url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
+            url: showUrl + "?id=" + id,
             type: "GET",
             dataType: "json",
             success: function (detailData) {
@@ -158,13 +157,9 @@ $(document).ready(function () {
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Basic Information</h5>";
                 modalBody +=
-                    "<p><strong>Reg No:</strong> " +
-                    detailData.regno +
-                    "</p>";
+                    "<p><strong>Reg No:</strong> " + detailData.regno + "</p>";
                 modalBody +=
-                    "<p><strong>Year:</strong> " +
-                    detailData.year +
-                    "</p>";
+                    "<p><strong>Year:</strong> " + detailData.year + "</p>";
                 modalBody +=
                     "<p><strong>Department:</strong> " +
                     detailData.deptt +
@@ -174,9 +169,7 @@ $(document).ready(function () {
                     detailData.associated +
                     "</p>";
                 modalBody +=
-                    "<p><strong>DOR:</strong> " +
-                    detailData.dor +
-                    "</p>";
+                    "<p><strong>DOR:</strong> " + detailData.dor + "</p>";
                 modalBody += "</div>";
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Advocates</h5>";
@@ -311,23 +304,24 @@ $(document).ready(function () {
 
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
-           // url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
-            url : pdfUrl + "?id=" + id,
+            // url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
+            url: pdfUrl + "?id=" + id,
             type: "GET",
             dataType: "json",
             success: function (detailData) {
                 var modalTitle = "Case PDF"; // Set modal title
                 var modalFooter = "Click away to close this.";
-                var year = detailData.dod.split('-')[2];
+                var year = detailData.dod.split("-")[2];
                 var case_type = detailData.case_type;
                 var baseUrl =
                     "https://aftdelhi.nic.in/assets/judgement/" +
                     year +
-                    "/" + case_type + "/";
-               // alert(baseUrl);
+                    "/" +
+                    case_type +
+                    "/";
+                // alert(baseUrl);
                 var pdfUrl =
                     baseUrl + encodeURIComponent(detailData.dpdf.trim());
-                 //   alert(pdfUrl);
 
                 // Open PDF in a new tab
                 //----------- comment if folder pdf is on your site ------**
@@ -350,35 +344,6 @@ $(document).ready(function () {
                     "An error occurred while trying to open the PDF. Please try again later."
                 );
             },
-
-            //----------- Uncomment if folder pdf is on your site ------**
-            // var pdfUrl = "/pdf/" + detailData.dpdf; // Adjust according to your data structure
-            // alert(pdfUrl);
-            // var modalBody = '<div class="container">';
-            // modalBody += '<div class="row">';
-            // modalBody +=
-            //     '<iframe src="' +
-            //     pdfUrl +
-            //     '" width="100%" height="600px"></iframe>';
-            // modalBody += "</div>";
-            // modalBody += "</div>";
-
-            // // Populate modal with data
-            // $("#myModalLabel").text(modalTitle);
-            // $("#modal_footer").text(modalFooter);
-            // $(".modal-body").html(modalBody);
-
-            // // Open modal
-            // $("#myModalPDF").modal("show");
-
-            // // Close Modal
-            // $("#closeModalButton").click(function () {
-            //     $("#myModalPDF").modal("hide");
-            // });
-            // },
-            // error: function (xhr, status, error) {
-            //     console.error(xhr.responseText);
-            // },
         });
     }
 
@@ -388,7 +353,7 @@ $(document).ready(function () {
     function getFilters() {
         return {
             fileno: $("#fileno").val(),
-            year: $("#year").val(),
+            // year: $("#year").val(),
             partyname: $("#partyname").val(),
             advocate: $("#advocate").val(),
             casetype: $("#casetype").val(),
@@ -397,14 +362,14 @@ $(document).ready(function () {
         };
     }
 
-    $("#filterButtonRegistrationNumber").click(function () {
+    $("#filterButtonFileNumber").click(function () {
         var filters = {};
         filters.fileno = $("#fileno").val();
         // filters.year = $("#year").val();
         //  var url = baseUrl + "?fileno=" + filters.fileno + "&year="+filters.year;
         var url = baseUrl + "?fileno=" + filters.fileno;
         // alert(url);
-      //  var url = `{{ route('judgements.search.all') }}?fileno=${filters.fileno}&year=${filters.year}`;
+        //  var url = `{{ route('judgements.search.all') }}?fileno=${filters.fileno}&year=${filters.year}`;
         var headers = ["S No", "Reg No", "Year", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -424,9 +389,9 @@ $(document).ready(function () {
         };
         fetchJudgements(
             url,
-            "dataTableRegistrationNumber",
+            "dataTableFileNumber",
             "No data available for given search.",
-            "paginationLinksRegistrationNumber",
+            "paginationLinksFileNumber",
             filters,
             headers,
             rowBuilder
@@ -437,7 +402,7 @@ $(document).ready(function () {
         var filters = {};
         filters.partyname = $("#partyname").val();
         var url = baseUrl + "?partyname=" + filters.partyname;
-       // var url = `{{ route('judgements.search.all') }}?partyname=${filters.partyname}`;
+        // var url = `{{ route('judgements.search.all') }}?partyname=${filters.partyname}`;
         var headers = ["S No", "Reg No", "Applicant", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -469,7 +434,7 @@ $(document).ready(function () {
         var filters = {};
         filters.advocate = $("#advocate").val();
         var url = baseUrl + "?advocate=" + filters.advocate;
-       // var url = `{{ route('judgements.search.all') }}?advocate=${filters.advocate}`;
+        // var url = `{{ route('judgements.search.all') }}?advocate=${filters.advocate}`;
         var headers = [
             "S No",
             "Reg No",
@@ -554,7 +519,7 @@ $(document).ready(function () {
 
         filters.casedate = formatInputDate(filters.casedate);
         var url = baseUrl + "?casedate=" + filters.casedate;
-       // var url = `{{ route('judgements.search.all') }}?casedate=${filters.casedate}`;
+        // var url = `{{ route('judgements.search.all') }}?casedate=${filters.casedate}`;
         var headers = [
             "S No",
             "Reg No",
@@ -593,7 +558,7 @@ $(document).ready(function () {
         var filters = {};
         filters.subject = $("#subject").val();
         var url = baseUrl + "?subject=" + filters.subject;
-       // var url = `{{ route('judgements.search.all') }}?subject=${filters.subject}`;
+        // var url = `{{ route('judgements.search.all') }}?subject=${filters.subject}`;
         var headers = ["S No", "Reg No", "Subject", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -628,14 +593,14 @@ $(document).ready(function () {
     $(".modalDataPDF").click(handleModalDataPDFClick);
 });
 
-    // Example function to toggle between light and dark modes
+// Example function to toggle between light and dark modes
 function toggleTheme(isDarkMode) {
-    var modalContent = document.querySelector('.modal-body .container');
+    var modalContent = document.querySelector(".modal-body .container");
     if (isDarkMode) {
-        modalContent.classList.remove('light-mode');
-        modalContent.classList.add('dark-mode');
+        modalContent.classList.remove("light-mode");
+        modalContent.classList.add("dark-mode");
     } else {
-        modalContent.classList.remove('dark-mode');
-        modalContent.classList.add('light-mode');
+        modalContent.classList.remove("dark-mode");
+        modalContent.classList.add("light-mode");
     }
 }

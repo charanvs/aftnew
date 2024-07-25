@@ -152,7 +152,6 @@ $(document).ready(function () {
 
     function handleModalDataClick() {
         var id = $(this).data("id");
-
         if (!id) {
             // Display a proper message if ID is not available
             var modalTitle = "Error";
@@ -173,8 +172,7 @@ $(document).ready(function () {
 
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
-           // url: "/diary/search/show/" + id, // Adjust this URL according to your route
-            url : showUrl + "?id=" + id,
+            url: showUrl + "?id=" + id, // Adjust this URL according to your route
             type: "GET",
             dataType: "json",
             success: function (detailData) {
@@ -337,7 +335,7 @@ $(document).ready(function () {
         var filters = {};
         filters.caseno = $("#caseno").val();
         var url = baseUrl + "?caseno=" + filters.caseno;
-       // var url = `/diary/search/all?caseno=${filters.caseno}`;
+        // var url = `/diary/search/all?caseno=${filters.caseno}`;
         var headers = ["S No", "Case No", "Diary No", "Associated", "Action"];
         // Updated rowBuilder function
         var rowBuilder = function (item) {
@@ -377,7 +375,7 @@ $(document).ready(function () {
         var filters = {};
         filters.diaryno = $("#diaryno").val();
         var url = baseUrl + "?diaryno=" + filters.diaryno;
-       // var url = `/diary/search/all?diaryno=${filters.diaryno}`;
+        // var url = `/diary/search/all?diaryno=${filters.diaryno}`;
         var headers = ["S No", "Diary No", "Applicant", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -410,7 +408,7 @@ $(document).ready(function () {
         var filters = {};
         filters.applicant = $("#applicant").val();
         var url = baseUrl + "?applicant=" + filters.applicant;
-      //  var url = `/diary/search/all?applicant=${filters.applicant}`;
+        //  var url = `/diary/search/all?applicant=${filters.applicant}`;
         var headers = ["S No", "Diary No", "Applicant", "Associated", "Action"];
         var rowBuilder = function (item) {
             return `
@@ -436,5 +434,4 @@ $(document).ready(function () {
             rowBuilder
         );
     });
-
 });
