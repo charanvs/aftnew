@@ -9,6 +9,11 @@ class CaseDependency extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+    // Define the table if it's not the default 'case_dependencies'
+    protected $table = 'case_dependencies';
+
     public function caseRegistration()
     {
         return $this->belongsTo(CaseRegistration::class, 'regid');
@@ -17,5 +22,11 @@ class CaseDependency extends Model
     public function interimJudgements()
     {
         return $this->hasMany(InterimJudgement::class, 'regid', 'regid');
+    }
+
+    public function matchingInterimJudgements()
+    {
+        return $this->hasMany(InterimJudgement::class, 'regid', 'regid')
+            ->whereColumn('dol', '=', 'case_dependencies.dol');
     }
 }

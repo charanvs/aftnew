@@ -10,6 +10,9 @@ use App\Models\Gallery;
 use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\CaseDependency;
+use App\Models\InterimJudgement;
 
 class FrontendController extends Controller
 {
@@ -47,7 +50,7 @@ class FrontendController extends Controller
         $data = Vacancy::all();
         return view('frontend.recruitment', compact('data'));
     }
-    
+
     public function Rules()
     {
         $data = Rule::all();

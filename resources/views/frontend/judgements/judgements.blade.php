@@ -181,19 +181,34 @@
   </div>
 </div>
 
+<!-- Help Section -->
+<div class="help-section mt-5">
+    <div class="container">
+      <h3>Help - Tab Navigation</h3>
+      <ul>
+        <li>Key 1 - Registration No Search</li>
+        <li>Key 2 - Party Name Search</li>
+        <li>Key 3 - Advocate Search</li>
+        <li>Key 4 - Case Type Search</li>
+        <li>Key 5 - Next Date Search</li>
+        <li>Key 6 - Subject Search</li>
+      </ul>
+    </div>
+  </div>
+
 <!-- Modals -->
 <div class="modal fade" id="myModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title">Details of Judgements</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>Modal body content goes here.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -210,18 +225,125 @@
         <p>Modal body content goes here.</p>
       </div>
       <div class="modal-footer" id="modal_footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
 <script>
   var baseUrl = "{{ route('judgements.search.all') }}";
   var showUrl = "{{ route('judgements.show') }}";
   var pdfUrl = "{{ route('judgements.pdf') }}";
 </script>
 <script src="{{ asset('frontend/assets/js/mytabs.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        // Shortcut keys for tabs
+        $(document).keydown(function(e) {
+            switch (e.which) {
+                case 49: // Key 1
+                    $('.tabs li:nth-child(1) a').click();
+                    break;
+                case 50: // Key 2
+                    $('.tabs li:nth-child(2) a').click();
+                    break;
+                case 51: // Key 3
+                    $('.tabs li:nth-child(3) a').click();
+                    break;
+                case 52: // Key 4
+                    $('.tabs li:nth-child(4) a').click();
+                    break;
+                case 53: // Key 5
+                    $('.tabs li:nth-child(5) a').click();
+                    break;
+                case 54: // Key 6
+                    $('.tabs li:nth-child(6) a').click();
+                    break;
+                case 55: // Key 7
+                    $('.tabs li:nth-child(7) a').click();
+                    break;
+                default:
+                    return;
+            }
+            e.preventDefault();
+        });
+
+        // Tab switching functionality
+        $('.tabs li a').click(function(e) {
+            e.preventDefault();
+            var tabIndex = $(this).parent().index();
+
+            $('.tabs_item').removeClass('current');
+            $('.tabs_item').eq(tabIndex).addClass('current');
+
+            $('.tabs li').removeClass('current');
+            $(this).parent().addClass('current');
+        });
+    });
+    $(document).ready(function() {
+
+      // Print functionality
+      $(document).on('click', '#printButton', function() {
+        const printContents = document.querySelector("#myModal .modal-body").innerHTML;
+        const modalTitle = $("#myModalLabel").text();
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(`
+          <html>
+          <head>
+              <title>${modalTitle}</title>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                  }
+                  .container {
+                      margin: 0 auto;
+                      width: 80%;
+                  }
+                  .row {
+                      display: flex;
+                      flex-wrap: wrap;
+                      margin-bottom: 20px;
+                  }
+                  .col-md-6 {
+                      flex: 0 0 50%;
+                      max-width: 50%;
+                  }
+                  .col-md-12 {
+                      flex: 0 0 100%;
+                      max-width: 100%;
+                  }
+                  h5 {
+                      font-size: 18px;
+                      margin-bottom: 10px;
+                  }
+                  p {
+                      margin: 5px 0;
+                  }
+                  .btn {
+                      display: none;
+                  }
+              </style>
+          </head>
+          <body>
+              <h1>${modalTitle}</h1>
+              <div class="container">
+                  ${printContents}
+              </div>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      });
+    });
+  </script>
 
 @endsection

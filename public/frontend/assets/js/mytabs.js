@@ -145,13 +145,11 @@ $(document).ready(function () {
 
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
-            //   url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
             url: showUrl + "?id=" + id,
             type: "GET",
             dataType: "json",
             success: function (detailData) {
                 var modalTitle = "Case Details"; // Set modal title
-                var modalFooter = "Click away to close this.";
                 var modalBody = '<div class="container theme-dark-two">';
                 modalBody += '<div class="row">';
                 modalBody += '<div class="col-md-6">';
@@ -219,6 +217,7 @@ $(document).ready(function () {
                     "</p>";
                 modalBody += "</div>";
                 modalBody += "</div>"; // End of row
+
                 var buttonsHtml = "";
                 var interimJudgements = detailData.interim_judgements;
                 for (var i = 0; i < interimJudgements.length; i++) {
@@ -267,7 +266,6 @@ $(document).ready(function () {
                     buttonsHtml += `</div>`;
                 }
 
-                modalBody += `<div class="row">${buttonsHtml}</div>`;
                 modalBody += `</div>`;
                 modalBody += "</div>";
                 modalBody += "<div>";
@@ -278,12 +276,17 @@ $(document).ready(function () {
                 modalBody += "</div>";
                 modalBody += "</div>"; // End of container
 
-                $(".modal-body").html(modalBody); // Adjust fields according to your data structure
+                const modalFooterContent = `
+                <button id="printButton" class="btn btn-primary">Print</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            `;
 
-                // Populate modal with data
-                $("#myModalLabel").text(modalTitle);
-                $("#modal_footer").text(modalFooter);
                 $(".modal-body").html(modalBody);
+                $(".modal-footer").html(modalFooterContent);
+                $("#myModalLabel").text(modalTitle);
+                $("#myModal").modal("show");
+
+                $("#printButton").click(printModalContent);
 
                 // Open modal
                 $("#myModal").modal("show");
@@ -295,6 +298,49 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
+            },
+        });
+    }
+
+    function handleModalDataPDFClick() {
+        var id = $(this).data("id");
+
+        // Perform AJAX request to fetch data for the specific ID
+        $.ajax({
+            url: pdfUrl + "?id=" + id,
+            type: "GET",
+            dataType: "json",
+            success: function (detailData) {
+                var modalTitle = "Case PDF"; // Set modal title
+                var modalBody = ""; // Declare modalBody variable
+                var year = detailData.dod.split("-")[2];
+                var case_type = detailData.case_type;
+                var baseUrl =
+                    "https://aftdelhi.nic.in/assets/judgement/" +
+                    year +
+                    "/" +
+                    case_type +
+                    "/";
+                var pdfUrl =
+                    baseUrl + encodeURIComponent(detailData.dpdf.trim());
+
+                // Open PDF in a new tab
+                var newWindow = window.open(pdfUrl, "_blank");
+                if (
+                    !newWindow ||
+                    newWindow.closed ||
+                    typeof newWindow.closed == "undefined"
+                ) {
+                    alert(
+                        "The PDF could not be opened. Please check your browser settings."
+                    );
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert(
+                    "An error occurred while trying to open the PDF. Please try again later."
+                );
             },
         });
     }

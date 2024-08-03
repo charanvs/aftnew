@@ -17,4 +17,14 @@ class CaseRegistration extends Model
     {
         return $this->hasMany(CaseDependency::class, 'regid');
     }
+
+    public function caseDependency()
+    {
+        return $this->hasOne(CaseDependency::class, 'regid', 'id');
+    }
+
+    public function interimJudgements()
+    {
+        return $this->hasMany(InterimJudgement::class, 'regid', 'id');
+    }
 }

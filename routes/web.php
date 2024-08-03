@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\BenchController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Utility\SqlUtilityController;
 
+
 Route::get('/', function () {
     return view('frontend.index');
 });
@@ -49,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Judgement Routes
 Route::controller(JudgementController::class)->group(function () {
-    
+
     Route::get('/judgements/search', 'ShowJudgements')->name('judgements.page');
     Route::get('/judgements/search/all', 'JudgementsSearch')->name('judgements.search.all');
     Route::get('/judgements/search/any', 'WildSearch')->name('judgements.search.wild');
@@ -72,7 +73,8 @@ Route::controller(CaseManagementController::class)->group(function () {
     Route::get('/cases/search/all', 'CaseSearch')->name('cases.search.all');
     Route::get('/cases/search/show', 'ShowCasesData')->name('case.show');
     Route::get('/pdf/{id}', 'GeneratePDF')->name('generate.pdf');
-
+    Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
+    Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
 });
 
 // Frontend Routes
