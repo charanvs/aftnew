@@ -115,46 +115,5 @@ class CaseManagementController extends Controller
         $data = CaseRegistration::where('padvocate', 'like', '%' . $advocate . '%')->orWhere('radvocate', 'like', '%' . $advocate . '%')->paginate(10);
         return response()->json($data);
     } // end mehtod
-    public function AdvancedSearch()
-    {
-        return view('frontend.search.index');
-    }
-    public function searchPerform(Request $request)
-    {
-        $query = CaseRegistration::query();
 
-        if ($request->filled('search_type') && $request->filled('keyword')) {
-            $searchType = $request->input('search_type');
-            $keyword = $request->input('keyword');
-
-            switch ($searchType) {
-                case 'registration_no':
-                    $query->where('registration_no', 'like', '%' . $keyword . '%');
-                    break;
-                case 'applicant':
-                    $query->where('applicant', 'like', '%' . $keyword . '%');
-                    break;
-                case 'radvocate':
-                    $query->where('radvocate', 'like', '%' . $keyword . '%');
-                    break;
-                case 'padvocate':
-                    $query->where('padvocate', 'like', '%' . $keyword . '%');
-                    break;
-                case 'dol':
-                    $query->join('case_dependencies', 'case_registrations.id', '=', 'case_dependencies.regid')
-                        ->leftJoin('interim_judgements', function ($join) use ($request) {
-                            $join->on('case_dependencies.regid', '=', 'interim_judgements.regid')
-                                ->where('interim_judgements.dol', '=', $request->keyword);
-                        })
-                        ->where('case_dependencies.dol', 'like', '%' . $keyword . '%')
-                        ->select('case_registrations.*', 'case_dependencies.dol', 'case_dependencies.courtno', 'interim_judgements.pdfname');
-                    break;
-                    // Add more cases as needed for additional search options
-            }
-        }
-
-        $cases = $query->get();
-
-        return view('frontend.search.results', compact('cases', 'searchType'));
-    }
 }

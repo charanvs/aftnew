@@ -212,8 +212,8 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="contact.html" class="nav-link" data-text="RTI">
-                  RTI
+                <a href="{{ route('advanced.search') }}" class="nav-link" data-text="Advanced Search">
+                  Advanced Search
                 </a>
               </li>
             </ul>

@@ -25,6 +25,7 @@ class CaseRegistration extends Model
 
     public function interimJudgements()
     {
-        return $this->hasMany(InterimJudgement::class, 'regid', 'id');
+        return $this->hasMany(InterimJudgement::class, 'regid', 'id')
+            ->orderByRaw("STR_TO_DATE(dol, '%d-%m-%Y') ASC");
     }
 }

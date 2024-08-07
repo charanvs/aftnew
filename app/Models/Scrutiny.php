@@ -13,6 +13,6 @@ class Scrutiny extends Model
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class, 'sid');
+        return $this->hasMany(Notification::class, 'sid', 'id');
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Home\HomeSliderController;
 use App\Http\Controllers\JudgementController;
+use App\Http\Controllers\AdvancedSearchController;
 use App\Http\Controllers\File\FileController;
 use App\Http\Controllers\cases\CaseManagementController;
 use App\Http\Controllers\EventController;
@@ -73,6 +74,12 @@ Route::controller(CaseManagementController::class)->group(function () {
     Route::get('/cases/search/all', 'CaseSearch')->name('cases.search.all');
     Route::get('/cases/search/show', 'ShowCasesData')->name('case.show');
     Route::get('/pdf/{id}', 'GeneratePDF')->name('generate.pdf');
+    Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
+    Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
+});
+
+//  Advanced Search Routes
+Route::controller(AdvancedSearchController::class)->group(function () {
     Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
     Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
 });

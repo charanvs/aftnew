@@ -10,4 +10,9 @@ class Disposed extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function interimJudgements()
+    {
+        return $this->hasMany(InterimJudgement::class, 'regid', 'regid');
+    }
 }
