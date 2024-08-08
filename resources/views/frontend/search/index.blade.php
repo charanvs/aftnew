@@ -20,10 +20,10 @@
                   Select Search Criteria
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuOrdersButton">
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Date Of Order', 'order_dol', 'orders')">Date Of Order</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Registration No', 'order_registration_no', 'orders')">Registration No</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Applicant', 'order_applicant', 'orders')">Applicant</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Advocate', 'order_advocate', 'orders')">Advocate</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Date Of Order', 'order_dol', 'orders', 'Please Enter Date of Order dd-mm-yyyy - Order')">Date Of Order</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Registration No', 'order_registration_no', 'orders', 'Please Enter Registration No - Order')">Registration No</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Applicant', 'order_applicant', 'orders', 'Please Enter Name of Applicant - Order')">Applicant</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuOrdersButton', 'Advocate', 'order_advocate', 'orders', 'Please Enter Name of Advocate - Order')">Advocate</a></li>
                 </ul>
               </div>
             </div>
@@ -35,16 +35,14 @@
                   Select Search Criteria
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuJudgementsButton">
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Registration No', 'judgements_registration_no', 'judgements')">Registration No</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Applicant', 'judgements_applicant', 'judgements')">Applicant</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Advocate', 'judgements_advocate', 'judgements')">Advocate</a></li>
-                  <!-- <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Case Type', 'judgements_case_type', 'judgements')">Case Type</a></li> -->
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Date Of Judgement', 'judgements_dor', 'judgements')">Date Of Judgement</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Subject', 'judgements_subject', 'judgements')">Subject</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Registration No', 'judgements_registration_no', 'judgements', 'Please Enter Registration No - Judgement')">Registration No</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Applicant', 'judgements_applicant', 'judgements', 'Please Enter Name of Applicant - Judgement')">Applicant</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Advocate', 'judgements_advocate', 'judgements', 'Please Enter Name of Advocate - Judgement')">Advocate</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Date Of Judgement', 'judgements_dor', 'judgements', 'Please Enter Date of Judgement dd-mm-yyyy - Judgement')">Date Of Judgement</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuJudgementsButton', 'Subject', 'judgements_subject', 'judgements', 'Please Enter Subject - Judgement')">Subject</a></li>
                 </ul>
               </div>
             </div>
-
 
             <div class="col-md-4 mb-3">
                 <h6 class="mb-3">Search Diary</h6>
@@ -53,9 +51,8 @@
                     Select Search Criteria
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuDiaryButton">
-                    <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Applicant Name', 'diary_applicant', 'Diary')">Applicant Name</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Diary No', 'diary_diaryno', 'Diary')">Diary No</a></li>
-
+                    <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Applicant Name', 'diary_applicant', 'Diary', 'Please Enter Applicant - Diary')">Applicant Name</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Diary No', 'diary_diaryno', 'Diary', 'Please Enter Diary No - Diary')">Diary No</a></li>
                   </ul>
                 </div>
               </div>
@@ -67,7 +64,7 @@
           <div class="text-center">
             <button type="submit" id="searchButton" class="btn btn-primary btn-lg">Search</button>
             <button type="button" id="resetButton" class="btn btn-secondary btn-lg" onclick="resetForm()" style="display: none;">Reset</button>
-            <div id="errorMessage" class="text-danger mt-2" style="display: none;">Choose only one option from Orders or Judgements or Diray.</div>
+            <div id="errorMessage" class="text-danger mt-2" style="display: none;">Choose only one option from Orders or Judgements or Diary.</div>
           </div>
         </form>
       </div>
@@ -107,10 +104,11 @@
   <script>
     let selectedCategory = null;
 
-    function updateDropdown(event, dropdownId, text, value, category) {
+    function updateDropdown(event, dropdownId, text, value, category, placeholder) {
       event.preventDefault(); // Prevent default action of the link
       document.getElementById(dropdownId).textContent = text;
       document.getElementById('search_type').value = value;
+      document.getElementById('keyword').placeholder = placeholder; // Update the placeholder dynamically
       document.getElementById('keyword').focus(); // Set focus to the keyword input field
 
       if (selectedCategory === null) {
@@ -128,11 +126,11 @@
       document.getElementById('dropdownMenuDiaryButton').textContent = 'Select Search Criteria';
       document.getElementById('search_type').value = '';
       document.getElementById('keyword').value = '';
+      document.getElementById('keyword').placeholder = 'Enter keyword';
       document.getElementById('searchButton').disabled = false;
       document.getElementById('resetButton').style.display = 'none';
       document.getElementById('errorMessage').style.display = 'none';
       selectedCategory = null;
     }
-
   </script>
 @endsection

@@ -1,24 +1,29 @@
 <style>
+    .breadcrumb-section {
+      width: 90%; /* Set breadcrumb width to 90% of the screen */
+      margin: 0 auto; /* Center the breadcrumb */
+      padding: 10px 0; /* Adjust padding for the breadcrumb */
+    }
+
     .inner-title {
       background: rgba(0, 0, 0, 0.5);
-      padding: 20px;
+      padding: 10px 20px;
       border-radius: 8px;
-      text-align: center;
       color: #fff;
     }
 
     .inner-title h3 {
-      font-size: 36px;
-      margin: 10px 0;
+      font-size: 24px; /* Adjusted font size */
+      margin: 5px 0;
       color: #ffd700;
-      /* Golden color */
       font-weight: bold;
       text-transform: uppercase;
+      text-align: center; /* Centered title */
     }
 
     .breadcrumb {
       padding: 0;
-      margin: 0 0 10px;
+      margin: 0 0 5px;
       list-style: none;
       display: flex;
       justify-content: center;
@@ -27,8 +32,8 @@
     }
 
     .breadcrumb li {
-      font-size: 16px;
-      margin-right: 10px;
+      font-size: 14px; /* Adjusted font size */
+      margin-right: 8px;
     }
 
     .breadcrumb li+li:before {
@@ -39,74 +44,98 @@
 
     .breadcrumb li a {
       color: #ffd700;
-      /* Golden color */
       text-decoration: none;
     }
 
     .breadcrumb li a:hover {
       color: #ff8c00;
-      /* Dark orange */
       text-decoration: underline;
     }
 
-    .carousel-caption {
-      bottom: 30%;
+    #google_translate_element {
+      margin-left: auto; /* Push the translator to the right */
+      text-align: right; /* Ensure text aligns properly */
+    }
+
+    /* Make the navbar sticky */
+    .navbar-area {
+      position: sticky;
+      top: 0;
+      z-index: 1000; /* Ensure it stays above other elements */
+      background-color: #fff; /* Add a background to prevent transparency issues */
+    }
+
+    /* Responsive navbar adjustments */
+    .navbar-nav {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .navbar-nav .nav-link {
+      white-space: normal;
+      padding: 8px 15px;
+    }
+
+    @media (min-width: 1200px) {
+      .navbar-nav .nav-link {
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199px) {
+      .navbar-nav .nav-link {
+        font-size: 14px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+      .navbar-nav .nav-link {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .navbar-nav .nav-link {
+        font-size: 12px;
+      }
+      .navbar-nav .more-dropdown {
+        display: none;
+      }
+    }
+
+    .navbar-nav .more-dropdown .dropdown-menu {
+      right: 0;
+      left: auto;
+    }
+
+    @media (max-width: 1200px) {
+      .navbar-nav .more-dropdown .dropdown-menu {
+        display: block;
+        position: static;
+        width: 90%;
+      }
+    }
+
+    /* Ensure the content section is placed below the header */
+    .content-section {
+      padding-top: 20px; /* Ensure content is visible below the header */
     }
   </style>
-  <header class="top-header top-header-bg py-3">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-3 col-md-4 mb-2 mb-md-0">
-          <div id="google_translate_element" class="text-md-left text-center"></div>
-          <script type="text/javascript">
-            function googleTranslateElementInit() {
-              new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,hi,ta,pa',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-              }, 'google_translate_element');
-            }
-          </script>
-          <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        </div>
-        @php
-          use App\Models\Bench;
-          $active = Bench::where('id', '6')->first();
-        @endphp
-        <div class="col-lg-9 col-md-8">
-          <div class="header-right d-flex flex-column flex-md-row justify-content-md-end text-center text-md-left">
-            <ul class="list-unstyled mb-0 d-flex flex-column flex-md-row">
-              <li class="mb-2 mb-md-0 mr-md-3">
-                <i class='bx bx-home-alt mr-1'></i>
-                <a href="#" class="text-decoration-none">{{ $active->address }}</a>
-              </li>
-              <li class="mb-2 mb-md-0 mr-md-3">
-                <i class='bx bx-phone-call mr-1'></i>
-                <a href="" class="text-decoration-none">{{ $active->phone_no }}</a>
-              </li>
-              <li>
-                <i class='bx bx-envelope mr-1'></i>
-                <a href="mailto:pbnewdelhi@mail.com" class="text-decoration-none">{{ $active->emailid }}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
 
   <!-- Breadcrumb Section -->
-  <div class="breadcrumb-section py-3">
-    <div class="container">
-      <div class="inner-title">
-        <ul class="breadcrumb">
+  <div class="breadcrumb-section">
+    <div class="inner-title d-flex justify-content-between align-items-center">
+      <div>
+        <ul class="breadcrumb mb-0">
           <li><a href="{{ url('/') }}">Home</a></li>
           <li id="main-menu-value">AFT PB</li>
           <li id="selected-menu-value"></li>
         </ul>
         <h3>AFT PB</h3>
       </div>
+      <!-- Translator moved inside the breadcrumb section -->
+      <div id="google_translate_element"></div>
     </div>
   </div>
 
@@ -201,20 +230,27 @@
                     </li>
                   </ul>
                 </li>
-              <li class="nav-item">
-                  <a href="{{ route('rules.page') }}" class="nav-link {{ isActiveRoute('rules.page') }}" data-text="Act & Rules">
-                  Acts & Rules
+                <li class="nav-item">
+                    <a href="{{ route('advanced.search') }}" class="nav-link  {{ areActiveRoutes(['advanced.search', 'advanced.search.perform']) }}" data-text="Advanced Search">Advanced Search</a>
+                  </li>
+
+              <!-- Remaining nav items -->
+              <li class="nav-item dropdown more-dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="moreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  More
                 </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('vacancies.page') }}" class="nav-link {{ isActiveRoute('vacancies.page') }}" data-text="Vacancies">
-                  Vacancies
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('advanced.search') }}" class="nav-link" data-text="Advanced Search">
-                  Advanced Search
-                </a>
+                <ul class="dropdown-menu" aria-labelledby="moreDropdown">
+                    <li class="nav-item">
+                        <a href="{{ route('rules.page') }}" class="nav-link {{ isActiveRoute('rules.page') }}" data-text="Act & Rules">
+                        Acts & Rules
+                      </a>
+                    </li>
+                  <li class="nav-item">
+                    <a href="{{ route('vacancies.page') }}" class="nav-link {{ isActiveRoute('vacancies.page')  }}">Vacancies</a>
+                  </li>
+
+                  <!-- Add more items here as needed -->
+                </ul>
               </li>
             </ul>
           </div>
@@ -224,10 +260,26 @@
   </div>
   <!-- End Navbar Area -->
 
+  <!-- Content Section -->
+  <div class="content-section" id="content-section">
+    <!-- Your content goes here -->
+  </div>
+
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,ta,pa',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <script>
     $(document).ready(function() {
       // Retrieve and display the saved menu item text from localStorage on page load
@@ -241,8 +293,14 @@
       }
 
       // Event listener for menu item clicks
-      $(".nav-link, .services-bar-widget .side-bar-categories a").click(function() {
-        // Check if the clicked element is a sub-menu item or main menu item
+      $(".nav-link, .services-bar-widget .side-bar-categories a").click(function(e) {
+        var link = $(this).attr('href');
+
+        // Check if the link is for an internal section or external page
+        if (link.startsWith("#") || link === "javascript:void(0);") {
+          e.preventDefault(); // Prevent default action if the link is an internal section or non-functional link
+        }
+
         var subMenuText = $(this).data("text");
         var mainMenuText = $(this).closest('.dropdown-menu').siblings('.nav-link').data("text") || subMenuText;
 
@@ -253,6 +311,15 @@
         // Display the text content in the desired elements
         $("#main-menu-value").text(mainMenuText);
         $("#selected-menu-value").text(subMenuText);
+
+        // Scroll to the content section if the link is internal
+        if (link.startsWith("#")) {
+          $('html, body').animate({
+            scrollTop: $("#content-section").offset().top
+          }, 500);
+        } else {
+          window.location.href = link; // Navigate to the external page
+        }
       });
     });
   </script>
