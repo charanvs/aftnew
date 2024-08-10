@@ -111,7 +111,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(CalendarController::class)->group(function () {
         Route::get('/calendar', 'index')->name('calendar');
+        Route::get('/calendar/add', 'add')->name('calendar.add');
         Route::post('/calendar/events', 'store')->name('calendar.store');
+        Route::get('/calendar/edit/{id}', 'edit')->name('calendar.edit');
+        Route::post('/calendar/update', 'update')->name('calendar.update');
         Route::delete('/events/{id}', 'destroy')->name('calendar.delete');
     });
 

@@ -61,13 +61,20 @@
 
         </ul>
       </li>
-      <li class="menu-label">UI Elements</li>
+
       <li>
-        <a href="widgets.html">
-          <div class="parent-icon"><i class='bx bx-cookie'></i>
+        <a href="javascript:;" class="has-arrow">
+          <div class="parent-icon"><i class="bx bx-category"></i>
           </div>
-          <div class="menu-title">widgets</div>
+          <div class="menu-title">Manage Calander</div>
         </a>
+        <ul>
+          <li> <a href="{{ route('calendar') }}"><i class='bx bx-radio-circle'></i>All Events</a>
+          </li>
+          <li> <a href="{{ route('calendar.add') }}"><i class='bx bx-radio-circle'></i>Add Events</a>
+          </li>
+
+        </ul>
       </li>
 
     <!--end navigation-->
