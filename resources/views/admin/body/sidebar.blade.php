@@ -21,7 +21,7 @@
       </li>
       <li>
         <a href="javascript:;" class="has-arrow">
-          <div class="parent-icon"><i class="bx bx-category"></i>
+          <div class="parent-icon"><i class="bx bx-walk"></i>
           </div>
           <div class="menu-title">Manage Teams</div>
         </a>
@@ -35,7 +35,7 @@
       </li>
       <li>
         <a href="javascript:;" class="has-arrow">
-          <div class="parent-icon"><i class="bx bx-category"></i>
+          <div class="parent-icon"><i class="bx bx-font-family"></i>
           </div>
           <div class="menu-title">Manage Vacancy</div>
         </a>
@@ -49,7 +49,7 @@
       </li>
       <li>
         <a href="javascript:;" class="has-arrow">
-          <div class="parent-icon"><i class="bx bx-category"></i>
+          <div class="parent-icon"><i class="bx bx-abacus"></i>
           </div>
           <div class="menu-title">Manage Banner</div>
         </a>
@@ -64,7 +64,7 @@
 
       <li>
         <a href="javascript:;" class="has-arrow">
-          <div class="parent-icon"><i class="bx bx-category"></i>
+          <div class="parent-icon"><i class="bx bx-calendar"></i>
           </div>
           <div class="menu-title">Manage Calander</div>
         </a>
@@ -74,6 +74,19 @@
           <li> <a href="{{ route('calendar.add') }}"><i class='bx bx-radio-circle'></i>Add Events</a>
           </li>
 
+        </ul>
+      </li>
+      <li>
+        <a href="javascript:;" class="has-arrow">
+          <div class="parent-icon"><i class="bx bx-data"></i>
+          </div>
+          <div class="menu-title">Manage Data</div>
+        </a>
+        <ul>
+          <li> <a href="{{ route('copy.data') }}"><i class='bx bx-radio-circle'></i>Copy Data</a>
+          </li>
+          <li> <a href="{{ route('import.data') }}"><i class='bx bx-radio-circle'></i>Import Data</a>
+          </li>
         </ul>
       </li>
 

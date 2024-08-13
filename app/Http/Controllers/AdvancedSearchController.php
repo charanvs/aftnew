@@ -89,6 +89,14 @@ class AdvancedSearchController extends Controller
                         ->select('scrutinies.*', 'applicants.name as applicant_name');
                     $resultType = 'Diary';
                     break;
+
+                case 'diary_presentation_date':
+                    $query = Scrutiny::where('date_of_presentation', 'like', '%' . $keyword . '%')
+                        ->join('applicants', 'scrutinies.id', '=', 'applicants.sid')
+                        ->select('scrutinies.*', 'applicants.name as applicant_name');
+                    $resultType = 'Diary';
+                    break;
+
                 default:
                     return redirect()->back()->with('error', 'Invalid search type.');
             }

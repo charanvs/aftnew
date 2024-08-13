@@ -115,6 +115,7 @@
               @else
                 <th>Diary No</th>
                 <th>Applicant</th>
+                <th>Presentation Date</th>
               @endif
               <th>Action</th>
             </tr>
@@ -176,6 +177,7 @@
                 @else
                   <td>{{ $item->diary_no }}</td>
                   <td>{{ $item->applicant_name }}</td>
+                  <td>{{ $item->date_of_presentation }}</td>
                 @endif
 
                 <td>

@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\GalleryController;
 use App\Http\Controllers\Backend\BenchController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Utility\SqlUtilityController;
+use App\Http\Controllers\Util\CopyDataController;
 
 
 Route::get('/', function () {
@@ -96,6 +97,12 @@ Route::controller(FrontendController::class)->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::controller(CopyDataController::class)->group(function () {
+        Route::get('/data/copy', 'index')->name('copy.data');
+        Route::post('/data/copy/perform', 'copyTableData')->name('copy.data.perform');
+        Route::get('/import/data', 'importIndex')->name('import.data');
+        Route::post('/import/data/perform', 'importData')->name('import.data.perform');
+    });
     Route::controller(TeamController::class)->group(function () {
         Route::get('/all/team', 'AllTeam')->name('all.team');
         Route::get('/add/team', 'AddTeam')->name('add.team');

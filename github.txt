@@ -11,5 +11,5 @@ git branch -M main
 git push -u origin main
 
 git add .
-git commit -m "Minor changes in header and search index 08-08-2024. Also done in site"
+git commit -m "Add Daily Calendar, Cause List Functionality 10-08-2024."
 git push -u origin main
