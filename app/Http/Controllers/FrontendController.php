@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CaseRegistration;
+use App\Models\NewRecord;
 use App\Models\Team;
 use App\Models\Bench;
 use App\Models\Vacancy;
@@ -26,12 +27,13 @@ class FrontendController extends Controller
         $data = Team::all();
         $bench = Bench::all();
         $gallery = Gallery::all();
+        $new_records = NewRecord::all();
 
 
         $totalCases = DB::table('case_registrations')->count() + DB::table('judgements')->count();
         $pending = DB::table('case_registrations')->count();
         $disposed = DB::table('disposeds')->count();
-        return view('frontend.home.index', compact('data', 'totalCases', 'pending', 'disposed', 'bench', 'gallery'));
+        return view('frontend.home.index', compact('data', 'totalCases', 'pending', 'disposed', 'bench', 'gallery', 'new_records'));
     }
     public function Members()
     {
@@ -60,5 +62,11 @@ class FrontendController extends Controller
     public function OrganizationChart()
     {
         return view('frontend.org.organization');
+    }
+
+    public function TendersNotifications()
+    {
+        $items = NewRecord::paginate(10);
+        return view('frontend.pages.tenders_notifications', compact('items'));
     }
 }

@@ -7,68 +7,102 @@
 @section('main')
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<style>
+  .acts-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  .list-group-item {
+    font-size: 1.15rem;
+    font-weight: bold;
+    background-color: #f8f9fa;
+    color: #343a40;
+    transition: background-color 0.3s ease;
+  }
+  .list-group-item:hover {
+    background-color: #e9ecef;
+    color: #007bff;
+  }
+  .badge-primary {
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  .section-heading {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #495057;
+    margin-top: 1.5rem;
+  }
+</style>
+
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Acts and Rules</h2>
-  <div class="card">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table id="vacanciesTable" class="table table-striped table-bordered">
-          <thead class="thead-dark">
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach ($data as $rule)
-              <tr>
-                <td>{{ $rule->title }}</td>
-                <td>{{ $rule->description }}</td>
-                <td>
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pdfModal" data-pdf="{{ asset('upload/acts/' . $rule->file) }}">
-                    View
-                  </button>
-                </td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
+  <h2 class="text-center mb-4 acts-title">Acts and Rules</h2>
+  <div class="row">
+
+    <!-- First Column: Tribunal Acts -->
+    <div class="col-md-6">
+      <h3 class="section-heading">Tribunal Acts</h3>
+      <div class="list-group">
+        @php
+          $tribunalActs = [
+            ['title' => 'The Armed Forces Tribunal Act - RR', 'file' => 'The-Armed-Forces-Tribunal-Act-RR.pdf'],
+            ['title' => 'The Armed Forces Tribunal Act - RR GP A & B', 'file' => 'The-Armed-Forces-Tribunal-Act-RR-GP-A-B.pdf'],
+            ['title' => 'The Armed Forces Tribunal Act - RR GP C', 'file' => 'The-Armed-Forces-Tribunal-Act-RR-GP-C.pdf'],
+            ['title' => 'The Armed Forces Tribunal Act - 2007', 'file' => 'The-Armed-Forces-Tribunal-Act-2007.pdf'],
+            ['title' => 'The Armed Forces Tribunal (Practice) Rules - 2009', 'file' => 'The-Armed-Forces-Tribunal-Practice-Rules-2009.pdf'],
+            ['title' => 'The Armed Forces Tribunal (Procedure) Rules - 2008', 'file' => 'The-Armed-Forces-Tribunal-Procedure-Rules-2008.pdf'],
+            ['title' => 'The Armed Forces Tribunal (Procedure) Amendment Rules - 2011', 'file' => 'The-Armed-Forces-Tribunal-Procedure-Amendment-Rules-2011.pdf']
+          ];
+        @endphp
+
+        @foreach ($tribunalActs as $act)
+          <a href="{{ asset('pdf/acts/' . $act['file']) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+            <span>{{ $act['title'] }}</span>
+            <span class="badge badge-primary badge-pill">View</span>
+          </a>
+        @endforeach
       </div>
     </div>
-  </div>
 
-  <!-- PDF Modal -->
-  <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="pdfModalLabel">PDF Viewer</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <iframe id="pdfIframe" src="" style="width:100%; height:500px;" frameborder="0"></iframe>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
+    <!-- Second Column: Army, Air Force, and Navy Acts and Rules -->
+    <div class="col-md-6">
+      <h3 class="section-heading">Army Acts and Rules</h3>
+      <div class="list-group">
+        <a href="{{ asset('pdf/acts/Army-Act-1950.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Army Act 1950</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
+        <a href="{{ asset('pdf/acts/Army-Rules-1954.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Army Rules 1954</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
+      </div>
+
+      <h3 class="section-heading mt-4">Air Force Acts and Rules</h3>
+      <div class="list-group">
+        <a href="{{ asset('pdf/acts/Air-Force-Act-1950.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Air Force Act 1950</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
+        <a href="{{ asset('pdf/acts/Air-Force-Rules-1954.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Air Force Rules 1954</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
+      </div>
+
+      <h3 class="section-heading mt-4">Navy Acts and Rules</h3>
+      <div class="list-group">
+        <a href="{{ asset('pdf/acts/Navy-Act-1957.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Navy Act 1957</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
+        <a href="{{ asset('pdf/acts/Navy-Rules-1960.pdf') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank">
+          <span>Navy Rules 1960</span>
+          <span class="badge badge-primary badge-pill">View</span>
+        </a>
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  $(document).ready(function() {
-    $('#pdfModal').on('show.bs.modal', function(event) {
-      var button = $(event.relatedTarget);
-      var pdfUrl = button.data('pdf');
-      var modal = $(this);
-      modal.find('#pdfIframe').attr('src', pdfUrl);
-    });
-
-    $('#vacanciesTable').DataTable();
-  });
-</script>
 @endsection

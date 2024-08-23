@@ -92,7 +92,7 @@
     width: 100%;
     position: absolute;
     bottom: 100%;
-    animation: marquee 10s linear infinite;
+    animation: marquee 30s linear infinite;
   }
 
   @keyframes marquee {

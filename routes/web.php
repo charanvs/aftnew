@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\BenchController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Utility\SqlUtilityController;
 use App\Http\Controllers\Util\CopyDataController;
+use App\Http\Controllers\Backend\NewRecordController;
 
 
 Route::get('/', function () {
@@ -94,6 +95,7 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/acts_rules', 'Rules')->name('rules.page');
     Route::get('/home/test', 'HomeTest')->name('home.test');
     Route::get('/organization/chart', 'OrganizationChart')->name('organization.chart');
+    Route::get('/tenders/notifications', 'TendersNotifications')->name('tenders.notifications');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -102,6 +104,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/data/copy/perform', 'copyTableData')->name('copy.data.perform');
         Route::get('/import/data', 'importIndex')->name('import.data');
         Route::post('/import/data/perform', 'importData')->name('import.data.perform');
+    });
+    Route::controller(NewRecordController::class)->group(function () {
+        Route::get('/all/docs', 'index')->name('all.docs');
+        Route::get('/add/doc', 'AddRecord')->name('add.doc');
+        Route::post('/doc/store', 'StoreRecord')->name('doc.store');
+        Route::get('/doc/edit/{id}', 'edit')->name('edit.doc');
+        Route::post('/doc/update/{id}', 'update')->name('update.doc');
     });
     Route::controller(TeamController::class)->group(function () {
         Route::get('/all/team', 'AllTeam')->name('all.team');

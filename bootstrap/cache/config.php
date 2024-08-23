@@ -200,8 +200,8 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\framework/cache/data',
-        'lock_path' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\framework/cache/data',
+        'path' => 'C:\\wamp64\\www\\aftnew\\storage\\framework/cache/data',
+        'lock_path' => 'C:\\wamp64\\www\\aftnew\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -373,10 +373,10 @@
     'convert_entities' => true,
     'options' => 
     array (
-      'font_dir' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\fonts',
-      'font_cache' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\fonts',
-      'temp_dir' => 'C:\\Users\\CharanVarinder\\AppData\\Local\\Temp',
-      'chroot' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew',
+      'font_dir' => 'C:\\wamp64\\www\\aftnew\\storage\\fonts',
+      'font_cache' => 'C:\\wamp64\\www\\aftnew\\storage\\fonts',
+      'temp_dir' => 'C:\\Users\\CVSING~1\\AppData\\Local\\Temp',
+      'chroot' => 'C:\\wamp64\\www\\aftnew',
       'allowed_protocols' => 
       array (
         'file://' => 
@@ -421,13 +421,13 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\app',
+        'root' => 'C:\\wamp64\\www\\aftnew\\storage\\app',
         'throw' => false,
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\app/public',
+        'root' => 'C:\\wamp64\\www\\aftnew\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
         'throw' => false,
@@ -447,7 +447,7 @@
     ),
     'links' => 
     array (
-      'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\public\\storage' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\app/public',
+      'C:\\wamp64\\www\\aftnew\\public\\storage' => 'C:\\wamp64\\www\\aftnew\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -492,14 +492,14 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\logs/laravel.log',
+        'path' => 'C:\\wamp64\\www\\aftnew\\storage\\logs/laravel.log',
         'level' => 'debug',
         'replace_placeholders' => true,
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\logs/laravel.log',
+        'path' => 'C:\\wamp64\\www\\aftnew\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
         'replace_placeholders' => true,
@@ -564,7 +564,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\logs/laravel.log',
+        'path' => 'C:\\wamp64\\www\\aftnew\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -640,7 +640,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\resources\\views/vendor/mail',
+        0 => 'C:\\wamp64\\www\\aftnew\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -753,7 +753,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\framework/sessions',
+    'files' => 'C:\\wamp64\\www\\aftnew\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -774,9 +774,9 @@
   array (
     'paths' => 
     array (
-      0 => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\resources\\views',
+      0 => 'C:\\wamp64\\www\\aftnew\\resources\\views',
     ),
-    'compiled' => 'E:\\wamp64_new\\www\\aft_site\\laravel\\aftweb\\aftnew\\storage\\framework\\views',
+    'compiled' => 'C:\\wamp64\\www\\aftnew\\storage\\framework\\views',
   ),
   'tinker' => 
   array (

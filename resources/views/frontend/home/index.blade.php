@@ -20,8 +20,8 @@
               <div class="col-lg-5 col-md-4 p-0">
                 <div class="blog-img">
                   <a href="blog-details.html">
-                    <img src="{{ asset('frontend/assets/img/banner/delhi.jpg') }}" alt="Images"
-                      style="height:500px; width:300px;">
+                    <img src="{{ asset('frontend/assets/img/banner/delhi_resized_300x500.jpg') }}" alt="Images"
+                      >
                   </a>
                 </div>
               </div>
@@ -85,78 +85,136 @@
       </div>
     </section>
 
-    <!-- New section for What's New, Notifications, Blog Category, and Tenders -->
-    <section id="newSection">
-      <div class="row">
-        <div class="col-lg-7">
-          <div class="news-card">
-            <div class="card-header">What's New</div>
-            <div class="card-body">
-              <div class="marquee" id="marquee1">
-                <div class="marquee-content" id="marqueeContent1">
-                  <p>Notification 1: Lorem ipsum dolor sit amet.</p>
-                  <p>Notification 2: Consectetur adipiscing elit.</p>
-                  <p>Notification 3: Integer molestie lorem at massa.</p>
-                  <!-- Add more notifications as needed -->
+    <!-- Blog Style Area -->
+    <div class="blog-style-area">
+      <div class="container">
+        <section id="Main">
+          <!-- Your existing content here -->
+        </section>
+
+        <!-- New section for What's New, Notifications, Blog Category, and Tenders -->
+        <section id="newSection">
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="news-card">
+                <div class="card-header">What's New</div>
+                <div class="card-body">
+                  <div class="marquee" id="marquee1">
+                    <div class="marquee-content" id="marqueeContent1">
+                      @foreach ($new_records as $item)
+                        <a href="{{ asset('upload/tender_notifications/' . $item->pdfname) }}" target="_blank">
+                          <p>{{ $item->title }}</p>
+                        </a>
+                      @endforeach
+                      <!-- Add more notifications as needed -->
+                    </div>
+                  </div>
+                  <div class="controls">
+                    <button id="play1"><i class="fas fa-play"></i></button>
+                    <button id="stop1"><i class="fas fa-stop"></i></button>
+                  </div>
                 </div>
               </div>
-              <div class="controls">
-                <button id="play1"><i class="fas fa-play"></i></button>
-                <button id="stop1"><i class="fas fa-stop"></i></button>
+            </div>
+
+            <div class="col-lg-5">
+              <div class="services-bar-widget">
+                <h3 class="title">Handy Links</h3>
+                <div class="side-bar-categories">
+                  <ul>
+                    <li>
+                      <a href="{{ route('judgements.page') }}" data-text="Judgements">Judgements</a>
+                    </li>
+                    <li>
+                      <a href="{{ route('cases.page') }}" data-text="Daily Orders">Daily Orders</a>
+                    </li>
+                    <li>
+                      <a href="#" data-text="Gallery">Gallery</a>
+                    </li>
+                    <li>
+                      <a href="#" data-text="Notification">Notification</a>
+                    </li>
+                    <li>
+                      <a href="{{ route('vacancies.page') }}" data-text="Vacancies">Vacancies</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="col-lg-5">
-          <div class="services-bar-widget">
-            <h3 class="title">Handy Links</h3>
-            <div class="side-bar-categories">
-              <ul>
-                <li>
-                  <a href="{{ route('judgements.page') }}" data-text="Judgements">Judgements</a>
-                </li>
-                <li>
-                  <a href="{{ route('cases.page') }}" data-text="Daily Orders">Daily Orders</a>
-                </li>
-                <li>
-                  <a href="#" data-text="Gallery">Gallery</a>
-                </li>
-                <li>
-                  <a href="#" data-text="Notification">Notification</a>
-                </li>
-                <li>
-                  <a href="{{ route('vacancies.page') }}" data-text="Vacancies">Vacancies</a>
-                </li>
-              </ul>
+        <!-- Section for Regional Benches -->
+        <section id="branches">
+          <div class="col-lg-12">
+            <div class="container">
+              <div class="section-title text-center pb-5">
+                <h2>Regional Benches</h2>
+              </div>
+              <div id="branchesCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  @foreach ($bench->chunk(3) as $benchChunk)
+                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                      <div class="row">
+                        @foreach ($benchChunk as $bench)
+                          <div class="col-lg-4 col-md-6">
+                            <div class="room-card">
+                              <a href="">
+                                <img src="{{ asset($bench->image ?: 'default-image.jpg') }}" alt="Image">
+                              </a>
+                              <div class="content">
+                                <h3><a href="room-details.html" class="text-white">{{ $bench->bench_name }}</a></h3>
+                                <ul>
+                                  <li class="text-color">{{ $bench->description }}</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        @endforeach
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+                <!-- Carousel controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#branchesCarousel"
+                  data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#branchesCarousel"
+                  data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <!-- Section for Regional Benches -->
-    <section id="branches">
-      <div class="col-lg-12">
-        <div class="container">
+    <!-- Section for Gallery and Daily Cause List-->
+    <section id="Last">
+      <div class="row">
+        <div class="col-lg-7 pt-5 pb-5">
           <div class="section-title text-center pb-5">
-            <h2>Regional Benches</h2>
+            <h2>Gallery</h2>
           </div>
-          <div id="branchesCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-              @foreach ($bench->chunk(3) as $benchChunk)
-                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+              @foreach ($gallery->chunk(3) as $index => $galleryChunk)
+                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                   <div class="row">
-                    @foreach ($benchChunk as $bench)
+                    @foreach ($galleryChunk as $item)
                       <div class="col-lg-4 col-md-6">
                         <div class="room-card">
                           <a href="">
-                            <img src="{{ asset($bench->image ?: 'default-image.jpg') }}" alt="Image">
+                            <img src="{{ asset($item->image ?: 'default-image.jpg') }}" alt="Image">
                           </a>
                           <div class="content">
-                            <h3><a href="room-details.html" class="text-white">{{ $bench->bench_name }}</a></h3>
+                            <h3><a href="room-details.html" class="text-white">{{ $item->title }}</a></h3>
                             <ul>
-                              <li class="text-color">{{ $bench->description }}</li>
+                              <li class="text-color">{{ $item->description }}</li>
                             </ul>
                           </div>
                         </div>
@@ -167,181 +225,134 @@
               @endforeach
             </div>
             <!-- Carousel controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#branchesCarousel"
+            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
               data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#branchesCarousel"
+            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
               data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
           </div>
         </div>
+
+        <div class="col-lg-5 pt-5 pb-5">
+          <div class="section-title text-center pb-5">
+            <h2>Daily Cause List</h2>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <!-- Calendar -->
+              <div id='calendar'></div>
+              <div class="legend">
+                <span class="cause-list">Cause List</span>
+                <span class="holidays">Holidays</span>
+                <span class="other">Other</span>
+              </div>
+              <iframe id="pdfFrame" style="display:none; width:100%; height:600px;" frameborder="0"></iframe>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-  </div>
-</div>
+    <!-- Modal to display PDF -->
 
-<!-- Section for Gallery and Daily Cause List-->
-<section id="Last">
-  <div class="row">
-    <div class="col-lg-7 pt-5 pb-5">
-      <div class="section-title text-center pb-5">
-        <h2>Gallery</h2>
-      </div>
-      <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          @foreach ($gallery->chunk(3) as $index => $galleryChunk)
-            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-              <div class="row">
-                @foreach ($galleryChunk as $item)
-                  <div class="col-lg-4 col-md-6">
-                    <div class="room-card">
-                      <a href="">
-                        <img src="{{ asset($item->image ?: 'default-image.jpg') }}" alt="Image">
-                      </a>
-                      <div class="content">
-                        <h3><a href="room-details.html" class="text-white">{{ $item->title }}</a></h3>
-                        <ul>
-                          <li class="text-color">{{ $item->description }}</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                @endforeach
-              </div>
-            </div>
-          @endforeach
-        </div>
-        <!-- Carousel controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const marquee1 = document.getElementById('marqueeContent1');
+        const playButton1 = document.getElementById('play1');
+        const stopButton1 = document.getElementById('stop1');
 
-    <div class="col-lg-5 pt-5 pb-5">
-      <div class="section-title text-center pb-5">
-        <h2>Daily Cause List</h2>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <!-- Calendar -->
-          <div id='calendar'></div>
-          <div class="legend">
-            <span class="cause-list">Cause List</span>
-            <span class="holidays">Holidays</span>
-            <span class="other">Other</span>
-          </div>
-          <iframe id="pdfFrame" style="display:none; width:100%; height:600px;" frameborder="0"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Modal to display PDF -->
+        playButton1.addEventListener('click', function() {
+          marquee1.style.animationPlayState = 'running';
+        });
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const marquee1 = document.getElementById('marqueeContent1');
-    const playButton1 = document.getElementById('play1');
-    const stopButton1 = document.getElementById('stop1');
+        stopButton1.addEventListener('click', function() {
+          marquee1.style.animationPlayState = 'paused';
+        });
 
-    playButton1.addEventListener('click', function() {
-      marquee1.style.animationPlayState = 'running';
-    });
+        const marquee2 = document.getElementById('marqueeContent2');
+        const playButton2 = document.getElementById('play2');
+        const stopButton2 = document.getElementById('stop2');
 
-    stopButton1.addEventListener('click', function() {
-      marquee1.style.animationPlayState = 'paused';
-    });
+        playButton2.addEventListener('click', function() {
+          marquee2.style.animationPlayState = 'running';
+        });
 
-    const marquee2 = document.getElementById('marqueeContent2');
-    const playButton2 = document.getElementById('play2');
-    const stopButton2 = document.getElementById('stop2');
+        stopButton2.addEventListener('click', function() {
+          marquee2.style.animationPlayState = 'paused';
+        });
 
-    playButton2.addEventListener('click', function() {
-      marquee2.style.animationPlayState = 'running';
-    });
+        const marquee3 = document.getElementById('marqueeContent3');
+        const playButton3 = document.getElementById('play3');
+        const stopButton3 = document.getElementById('stop3');
 
-    stopButton2.addEventListener('click', function() {
-      marquee2.style.animationPlayState = 'paused';
-    });
+        playButton3.addEventListener('click', function() {
+          marquee3.style.animationPlayState = 'running';
+        });
 
-    const marquee3 = document.getElementById('marqueeContent3');
-    const playButton3 = document.getElementById('play3');
-    const stopButton3 = document.getElementById('stop3');
+        stopButton3.addEventListener('click', function() {
+          marquee3.style.animationPlayState = 'paused';
+        });
+      });
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
 
-    playButton3.addEventListener('click', function() {
-      marquee3.style.animationPlayState = 'running';
-    });
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          events: '{{ route('events.get') }}',
+          eventContent: function(arg) {
+            let content = document.createElement('div');
+            content.classList.add('fc-event-content');
 
-    stopButton3.addEventListener('click', function() {
-      marquee3.style.animationPlayState = 'paused';
-    });
-  });
-</script>
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
+            let title = document.createElement('div');
+            title.innerHTML = arg.event.title;
+            content.appendChild(title);
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      events: '{{ route('events.get') }}',
-      eventContent: function(arg) {
-        let content = document.createElement('div');
-        content.classList.add('fc-event-content');
+            if (arg.event.extendedProps.category == 'Cause List') {
+              title.style.backgroundColor = 'green';
+              let pdfLink = document.createElement('a');
+              pdfLink.href = arg.event.extendedProps.pdfUrl;
+              pdfLink.target = '_blank';
+              pdfLink.classList.add('show-pdf');
+              pdfLink.textContent = 'View PDF';
+              content.appendChild(pdfLink);
+            } else if (arg.event.extendedProps.category == 'Holidays') {
+              title.style.backgroundColor = 'blue';
+            } else {
+              title.style.backgroundColor = 'gray';
+            }
 
-        let title = document.createElement('div');
-        title.innerHTML = arg.event.title;
-        content.appendChild(title);
+            return {
+              domNodes: [content]
+            };
+          },
+          eventDidMount: function(info) {
+            if (info.event.extendedProps.category == 'Holidays') {
+              let eventEl = info.el;
+              eventEl.style.whiteSpace = 'normal';
+              eventEl.style.overflow = 'hidden';
+              eventEl.style.textOverflow = 'ellipsis';
+            }
+          },
+          dayCellDidMount: function(info) {
+            if (info.date.getDay() === 0 || info.date.getDay() === 6) { // 0 = Sunday, 6 = Saturday
+              info.el.classList.add('fc-day-sat');
+              info.el.classList.add('fc-day-sun');
+            }
+          }
+        });
 
-        if (arg.event.extendedProps.category == 'Cause List') {
-          title.style.backgroundColor = 'green';
-          let pdfLink = document.createElement('a');
-          pdfLink.href = arg.event.extendedProps.pdfUrl;
-          pdfLink.target = '_blank';
-          pdfLink.classList.add('show-pdf');
-          pdfLink.textContent = 'View PDF';
-          content.appendChild(pdfLink);
-        } else if (arg.event.extendedProps.category == 'Holidays') {
-          title.style.backgroundColor = 'blue';
-        } else {
-          title.style.backgroundColor = 'gray';
-        }
+        calendar.render();
+      });
+    </script>
 
-        return {
-          domNodes: [content]
-        };
-      },
-      eventDidMount: function(info) {
-        if (info.event.extendedProps.category == 'Holidays') {
-          let eventEl = info.el;
-          eventEl.style.whiteSpace = 'normal';
-          eventEl.style.overflow = 'hidden';
-          eventEl.style.textOverflow = 'ellipsis';
-        }
-      },
-      dayCellDidMount: function(info) {
-        if (info.date.getDay() === 0 || info.date.getDay() === 6) { // 0 = Sunday, 6 = Saturday
-          info.el.classList.add('fc-day-sat');
-          info.el.classList.add('fc-day-sun');
-        }
-      }
-    });
-
-    calendar.render();
-  });
-</script>
-
-@endsection
+  @endsection

@@ -7,19 +7,41 @@
 @section('main')
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<style>
+  .vacancies-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  .table th {
+    font-weight: bold;
+    background-color: #343a40;
+    color: #ffffff;
+  }
+  .table td {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #495057;
+  }
+  .btn-outline-primary {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+</style>
+
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Current Vacancies</h2>
-  <div class="card">
+  <h2 class="text-center mb-4 vacancies-title">Current Vacancies</h2>
+  <div class="card shadow-sm">
     <div class="card-body">
       <div class="table-responsive">
-        <table id="vacanciesTable" class="table table-striped table-bordered">
-          <thead class="thead-dark">
+        <table id="vacanciesTable" class="table table-striped table-hover table-bordered">
+          <thead>
             <tr>
               <th>Title</th>
               <th>Description</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>View</th>
+              <th class="text-center">View</th>
             </tr>
           </thead>
           <tbody>
@@ -27,10 +49,10 @@
               <tr>
                 <td>{{ $vacancy->title }}</td>
                 <td>{{ $vacancy->description }}</td>
-                <td>{{ $vacancy->start_date }}</td>
-                <td>{{ $vacancy->end_date }}</td>
-                <td>
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pdfModal" data-pdf="{{ asset('upload/vacancy/' . $vacancy->file) }}">
+                <td>{{ \Carbon\Carbon::parse($vacancy->start_date)->format('d-m-Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($vacancy->end_date)->format('d-m-Y') }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#pdfModal" data-pdf="{{ asset('upload/vacancy/' . $vacancy->file) }}">
                     View
                   </button>
                 </td>
@@ -72,7 +94,15 @@
       modal.find('#pdfIframe').attr('src', pdfUrl);
     });
 
-    $('#vacanciesTable').DataTable();
+    $('#vacanciesTable').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true
+    });
   });
 </script>
 @endsection
