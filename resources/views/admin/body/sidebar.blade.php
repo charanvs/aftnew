@@ -90,6 +90,20 @@
         </ul>
       </li>
 
+      <li>
+        <a href="javascript:;" class="has-arrow">
+          <div class="parent-icon"><i class="bx bx-data"></i>
+          </div>
+          <div class="menu-title">Manage Tenders & Notification</div>
+        </a>
+        <ul>
+          <li> <a href="{{ route('all.docs') }}"><i class="bx bx-folder-open"></i>All Docs</a>
+          </li>
+          <li> <a href="{{ route('add.doc') }}"><i class="bx bx-folder-open"></i>Add Doc</a>
+          </li>
+        </ul>
+      </li>
+
     <!--end navigation-->
   </div>
   <!--start overlay-->

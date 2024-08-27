@@ -183,15 +183,23 @@
 
                 <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto custom-nav">
+                      
                         <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link {{ isActiveRoute('home') }}" data-text="Home">
+                            <a href="{{ route('home') }}" class="nav-link {{ areActiveRoutes(['home', 'members.page', 'organization.chart']) }}" data-text="Home">
                                 Home
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('members.page') }}" class="nav-link {{ isActiveRoute('members.page') }}" data-text="Members">
-                                Members
-                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a href="{{ route('members.page') }}" class="nav-link" data-text="Members">
+                                       Members
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('organization.chart') }}" class="nav-link" data-text="Organization Chart">
+                                        Organization Chart
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link {{ areActiveRoutes(['daily_cause_list.page', 'cases.page']) }}" data-text="Case Management">
@@ -260,7 +268,7 @@
 
                         <!-- Remaining nav items -->
                         <li class="nav-item dropdown more-dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" id="moreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a href="#" class="nav-link dropdown-toggle" id="moreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="More">
                                 More
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="moreDropdown">
@@ -270,7 +278,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('vacancies.page') }}" class="nav-link {{ isActiveRoute('vacancies.page')  }}">Vacancies</a>
+                                    <a href="{{ route('vacancies.page') }}" class="nav-link {{ isActiveRoute('vacancies.page')  }}" data-text="Vacancies">Vacancies</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('tenders.notifications') }}" class="nav-link {{ isActiveRoute('tenders.notifications')  }}" data-text="Tenders & Notifications">Tenders & Notifications</a>
                                 </li>
 
                                 <!-- Add more items here as needed -->

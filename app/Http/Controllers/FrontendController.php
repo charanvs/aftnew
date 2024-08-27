@@ -53,6 +53,12 @@ class FrontendController extends Controller
         return view('frontend.recruitment', compact('data'));
     }
 
+    public function Gallery()
+    {
+        $data = Gallery::all();
+        return view('frontend.gallery', compact('data'));
+    }
+
     public function Rules()
     {
         $data = Rule::all();

@@ -53,7 +53,7 @@
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuDiaryButton">
                     <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Applicant Name', 'diary_applicant', 'Diary', 'Please Enter Applicant - Diary')">Applicant Name</a></li>
                     <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Diary No', 'diary_diaryno', 'Diary', 'Please Enter Diary No - Diary')">Diary No</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Presentation Date', 'diary_presentation_date', 'Diary', 'Please Enter Presentation Date as dd-mm-yyyy - Diary')">Presentation Date</a></li>
+                     <li><a class="dropdown-item" href="#" onclick="updateDropdown(event, 'dropdownMenuDiaryButton', 'Presentation Date', 'diary_presentation_date', 'Diary', 'Please Enter Presentation Date as dd-mm-yyyy - Diary')">Presentation Date</a></li>
                   </ul>
                 </div>
               </div>

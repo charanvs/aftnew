@@ -90,6 +90,7 @@ Route::controller(AdvancedSearchController::class)->group(function () {
 Route::controller(FrontendController::class)->group(function () {
     Route::get('/home', 'Home')->name('home');
     Route::get('/members', 'Members')->name('members.page');
+    Route::get('/gallery', 'Gallery')->name('gallery.page');
     Route::get('/daily_cause_list', 'DailyCauseList')->name('daily_cause_list.page');
     Route::get('/vacancies', 'Vacancies')->name('vacancies.page');
     Route::get('/acts_rules', 'Rules')->name('rules.page');
