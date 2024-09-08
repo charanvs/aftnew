@@ -165,15 +165,22 @@ class JudgementController extends Controller
 
     public function ReportableJudgements()
     {
-        $data = Judgement::where('reportable', '=', 'Y')->get();
+        // $data = Judgement::where('reportable', '=', 'Y')->get();
 
-        return view('frontend.judgements.reportable_judgements', compact('data'));
+        return view('frontend.judgements.reportable_judgements');
     }
 
     public function LargeBenchJudgements()
     {
-        $data = Judgement::where('larger_bench', '=', 'Y')->get();
+        // $data = Judgement::where('larger_bench', '=', 'Y')->get();
 
-        return view('frontend.judgements.largebench_judgements', compact('data'));
+        return view('frontend.judgements.largebench_judgements');
+    }
+
+    public function ReviewCases()
+    {
+        // $data = Judgement::where('larger_bench', '=', 'Y')->get();
+
+        return view('frontend.judgements.review_cases');
     }
 }

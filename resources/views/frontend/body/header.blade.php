@@ -219,7 +219,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link {{ areActiveRoutes(['judgements', 'judgements.page', 'judgements.reportable', 'judgements.largebench']) }}" data-text="Judgements">
+                            <a href="#" class="nav-link {{ areActiveRoutes(['judgements', 'judgements.page', 'judgements.reportable', 'judgements.largebench', 'judgements.reviewcases']) }}" data-text="Judgements">
                                 Judgements
                             </a>
                             <ul class="dropdown-menu">
@@ -239,13 +239,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link" data-text="Review Cases Of Regional Branches">
+                                    <a href="{{ route('judgements.reviewcases') }}" class="nav-link" data-text="Review Cases Of Regional Branches">
                                         Review Cases Of Regional Branches
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link" data-text="Large Bench Circulars">
-                                        Large Bench Circulars
                                     </a>
                                 </li>
                             </ul>
@@ -268,7 +263,7 @@
 
                         <!-- Remaining nav items -->
                         <li class="nav-item dropdown more-dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" id="moreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="More">
+                            <a href="#" class="nav-link dropdown-toggle {{ areActiveRoutes(['rules.page', 'vacancies.page', 'tenders.notifications', 'gallery.page']) }}" id="moreDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="More">
                                 More
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="moreDropdown">
@@ -283,6 +278,9 @@
 
                                 <li class="nav-item">
                                     <a href="{{ route('tenders.notifications') }}" class="nav-link {{ isActiveRoute('tenders.notifications')  }}" data-text="Tenders & Notifications">Tenders & Notifications</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('gallery.page') }}" class="nav-link {{ isActiveRoute('gallery.page')  }}" data-text="Gallery">Gallery</a>
                                 </li>
 
                                 <!-- Add more items here as needed -->

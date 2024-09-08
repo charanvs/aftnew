@@ -61,6 +61,8 @@ Route::controller(JudgementController::class)->group(function () {
     Route::get('/judgements/pdf', 'ShowPdf')->name('judgements.pdf');
     Route::get('/judgements/reportable', 'ReportableJudgements')->name('judgements.reportable');
     Route::get('/judgements/large/bench', 'LargeBenchJudgements')->name('judgements.largebench');
+    Route::get('/judgements/review/cases', 'ReviewCases')->name('judgements.reviewcases');
+    
 });
 // Diary Routes
 Route::controller(DiaryController::class)->group(function () {
