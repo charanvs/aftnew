@@ -186,12 +186,12 @@
     <div class="container">
       <h3>Help - Tab Navigation</h3>
       <ul>
-        <li>Key 1 - Registration No Search</li>
-        <li>Key 2 - Party Name Search</li>
-        <li>Key 3 - Advocate Search</li>
-        <li>Key 4 - Case Type Search</li>
-        <li>Key 5 - Next Date Search</li>
-        <li>Key 6 - Subject Search</li>
+        <li>Key r - Registration No Search</li>
+        <li>Key p - Party Name Search</li>
+        <li>Key a - Advocate Search</li>
+        <li>Key c - Case Type Search</li>
+        <li>Key d - Next Date Search</li>
+        <li>Key s - Subject Search</li>
       </ul>
     </div>
   </div>
@@ -249,26 +249,23 @@
         // Shortcut keys for tabs
         $(document).keydown(function(e) {
             switch (e.which) {
-                case 49: // Key 1
+                case 82: // Key r
                     $('.tabs li:nth-child(1) a').click();
                     break;
-                case 50: // Key 2
+                case 80: // Key p
                     $('.tabs li:nth-child(2) a').click();
                     break;
-                case 51: // Key 3
+                case 65: // Key a
                     $('.tabs li:nth-child(3) a').click();
                     break;
-                case 52: // Key 4
+                case 67: // Key c
                     $('.tabs li:nth-child(4) a').click();
                     break;
-                case 53: // Key 5
+                case 68: // Key d
                     $('.tabs li:nth-child(5) a').click();
                     break;
-                case 54: // Key 6
+                case 83: // Key s
                     $('.tabs li:nth-child(6) a').click();
-                    break;
-                case 55: // Key 7
-                    $('.tabs li:nth-child(7) a').click();
                     break;
                 default:
                     return;

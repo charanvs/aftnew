@@ -11,5 +11,5 @@ git branch -M main
 git push -u origin main
 
 git add .
-git commit -m "Small changes in 27.08.2024."
+git commit -m "Small changes on 08.09.2024."
 git push -u origin main

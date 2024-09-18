@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Utility\SqlUtilityController;
 use App\Http\Controllers\Util\CopyDataController;
 use App\Http\Controllers\Backend\NewRecordController;
-
+use App\Http\Controllers\Backend\JudgementBackendController;
+use App\Http\Controllers\Backend\ScuritinyBackendController;
 
 Route::get('/', function () {
     return view('frontend.index');
@@ -99,6 +100,8 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/home/test', 'HomeTest')->name('home.test');
     Route::get('/organization/chart', 'OrganizationChart')->name('organization.chart');
     Route::get('/tenders/notifications', 'TendersNotifications')->name('tenders.notifications');
+    Route::get('/new/calendar', 'NewCalendar')->name('new.calendar');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -122,6 +125,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit/team/{id}', 'EditTeam')->name('edit.team');
         Route::post('/team/update', 'UpdateTeam')->name('team.update');
     });
+    // Judgement Creation Controller
+
+    Route::controller(JudgementBackendController::class)->group(function () {
+        Route::get('/all/benches/judgements', 'AllJudgements')->name('all.benches.judgements');
+        Route::get('/add/judgement', 'AddJudgement')->name('add.judgement');
+        // Route::post('/banner/store', 'StoreBanner')->name('banner.store');
+    });
+
+    // Judgement Creation Controller
+
+    Route::controller(ScuritinyBackendController::class)->group(function () {
+        Route::get('/all/diary', 'AllDiary')->name('all.diary');
+        Route::get('/add/diary', 'AddDiary')->name('add.diary');
+        // Route::post('/banner/store', 'StoreBanner')->name('banner.store');
+    });
+
+
+    // Banner Creations
     Route::controller(BannerController::class)->group(function () {
         Route::get('/all/banner', 'AllBanner')->name('all.banner');
         Route::get('/add/banner', 'AddBanner')->name('add.banner');

@@ -156,7 +156,8 @@
                 <li id="main-menu-value">AFT PB</li>
                 <li id="selected-menu-value"></li>
             </ul>
-            <h3>AFT PB</h3>
+            <h5>AFT PB <a href="https://aftdelhi.nic.in/ourphp/courtdisplay/courtdisplay.php">Court Display Board</a></h5>
+            
         </div>
         <!-- Translator moved inside the breadcrumb section -->
         <div id="google_translate_element"></div>
@@ -214,6 +215,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('cases.page') }}" class="nav-link" data-text="Search Orders">
                                         Search Orders
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('diary.page') }}" class="nav-link" data-text="Search Orders">
+                                        Diary Search
                                     </a>
                                 </li>
                             </ul>

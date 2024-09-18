@@ -12,6 +12,7 @@
                         <option selected>Choose...</option>
                         <option value="Holiday">Holiday</option>
                         <option value="Cause List">Cause List</option>
+                        <option value="Court Holiday">Court Holiday</option>
                     </select>
                 </div>
                 <div class="col-md-12">

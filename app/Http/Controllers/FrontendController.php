@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\CaseDependency;
 use App\Models\InterimJudgement;
+use App\Models\Event;
 
 class FrontendController extends Controller
 {
@@ -74,5 +75,18 @@ class FrontendController extends Controller
     {
         $items = NewRecord::paginate(10);
         return view('frontend.pages.tenders_notifications', compact('items'));
+    }
+
+    public function NewCalendar() {
+         // Fetch events from the database
+    $events = Event::select('title', 'start', 'category')->get();
+
+    // Separate events into different categories
+    $holidays = $events->where('category', 'Holiday')->values(); // Use `values()` to reindex the collection
+    $causelist = $events->where('category', 'Cause List')->values();
+    $courtHolidays = $events->where('category', 'Court Holiday')->values();
+
+    // Pass categorized events to the Blade view
+    return view('frontend.calendar.old_aft_calendar', compact('holidays', 'causelist', 'courtHolidays'));
     }
 }
