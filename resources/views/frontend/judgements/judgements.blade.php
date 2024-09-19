@@ -37,7 +37,7 @@
   <div class="container ml-5">
     <div class="tab reservation-tab ml-5">
       <ul class="tabs">
-        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'Subject', 'Any'] as $tab)
+        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'Subject', 'Hon\'ble Judges'] as $tab)
           <li class="bg-secondary  m-1">
             <a href="#" class="default-btn btn-bg-four border-radius-5 btn-spacing">
               <span class="text-white h6">{{ $tab }}</span>
@@ -47,7 +47,7 @@
       </ul>
 
       <div class="tab_content current active pt-45">
-        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'Subject', 'Any'] as $key => $searchBy)
+        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'Subject', 'Hon\'ble Judges'] as $key => $searchBy)
           <div class="tabs_item {{ $key === 0 ? 'current' : '' }}">
             <div class="reservation-tab-item">
               <div class="row">
@@ -93,9 +93,16 @@
                               <i class='bx bx-calendar'></i>
                             </div>
                           </div>
-                        @elseif ($searchBy === 'Any')
+                        @elseif ($searchBy === 'Hon\'ble Judges')
                           <div class="col-lg-12">
-
+                            <div class="form-group">
+                              <label class="h5">Hon'ble Judge Name</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Judge Name" id="judgeName">
+                                <span class="input-group-addon"></span>
+                              </div>
+                              <i class='bx bx-user'></i>
+                            </div>
                           </div>
                         @elseif ($searchBy !== 'Case Type')
                           <div class="col-lg-12">
@@ -136,11 +143,11 @@
                             </div>
                           </div>
                         @endif
-                        @if ($searchBy === 'Any')
+                        @if ($searchBy === 'Hon\'ble Judges')
                           <div class="col-lg-12 col-md-12">
-                            <a href="{{ route('judgements.search.wild') }}" type="button"
+                            <a href="{{ route('judgements.search.judges') }}" type="button"
                               class="default-btn btn-bg-three border-radius-5">
-                              Search Any
+                              Search Hon'ble Judges
                             </a>
                           </div>
                         @else
@@ -192,6 +199,7 @@
         <li>Key c - Case Type Search</li>
         <li>Key d - Next Date Search</li>
         <li>Key s - Subject Search</li>
+        <li>Key j - Hon'ble Judges Search</li>
       </ul>
     </div>
   </div>
@@ -266,6 +274,9 @@
                     break;
                 case 83: // Key s
                     $('.tabs li:nth-child(6) a').click();
+                    break;
+                case 74: // Key j for Judges
+                    $('.tabs li:nth-child(7) a').click();
                     break;
                 default:
                     return;

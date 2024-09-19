@@ -18,41 +18,56 @@ class CaseManagementController extends Controller
     {
         return view('cases.case_management');
     } // end mehtod
+   
     public function CaseSearch(Request $request)
-    {
-        $query = CaseRegistration::query();
+{
+    $query = CaseRegistration::query();
 
-        if ($request->has('fileno')) {
-            // $query->where('file_no', $request->fileno)->where('year', $request->year);
-            $query->where('registration_no', 'LIKE', '%' . $request->fileno . '%');
-        }
-
-        if ($request->has('partyname')) {
-            $query->where('applicant', 'LIKE', '%' . $request->partyname . '%');
-        }
-
-        if ($request->has('advocate')) {
-            $query->where('padvocate', 'LIKE', '%' . $request->advocate . '%')->orWhere('radvocate', 'LIKE', '%' . $request->advocate . '%');
-        }
-
-        if ($request->has('casetype')) {
-            $query->where('case_type', $request->casetype);
-        }
-
-        if ($request->has('casedate')) {
-            $query->where('dol', $request->casedate);
-        }
-
-        if ($request->has('subject')) {
-            $query->where('subject', 'LIKE', '%' . $request->subject . '%');
-        }
-
-        $cases = $query->paginate(10);
-
-        // dd($cases);
-
-        return response()->json($cases);
+    // Search by file number
+    if ($request->has('fileno')) {
+        $query->where('registration_no', 'LIKE', '%' . $request->fileno . '%');
     }
+
+    // Search by party name
+    if ($request->has('partyname')) {
+        $query->where('applicant', 'LIKE', '%' . $request->partyname . '%');
+    }
+
+    // Search by advocate name
+    if ($request->has('advocate')) {
+        $query->where('padvocate', 'LIKE', '%' . $request->advocate . '%')
+              ->orWhere('radvocate', 'LIKE', '%' . $request->advocate . '%');
+    }
+
+    // Search by case type
+    if ($request->has('casetype')) {
+        $query->where('case_type', $request->casetype);
+    }
+
+    // Search by case date (DOL)
+    if ($request->has('casedate')) {
+        $query->where('dol', $request->casedate);
+    }
+
+    // Searching within interim_judgements table for 'dol' and eager loading pdfname
+    // Search by interim_judgements based on dol
+    if ($request->has('searchdate')) {
+        // Filter CaseRegistrations that have related InterimJudgements with matching dol
+        $query->whereHas('interimJudgements', function ($q) use ($request) {
+            $q->where('dol', $request->searchdate);
+        })
+        ->with(['interimJudgements' => function ($q) use ($request) {
+            $q->where('dol', $request->searchdate)
+              ->select('id', 'regid', 'dol', 'pdfname'); // Select only required fields
+        }]);
+    }
+
+    // Paginate results
+    $cases = $query->paginate(10);
+
+    return response()->json($cases);
+}
+
 
     public function GeneratePDF($id)
     {

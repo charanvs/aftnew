@@ -42,4 +42,9 @@ class Judgement extends Model
         // Return an empty collection if no disposed record was found
         return collect();
     }
+
+    public function corum()
+    {
+        return $this->belongsTo(AftCorum::class, 'corum_id', 'id');
+    }
 }

@@ -82,7 +82,7 @@
   <div class="container ml-5">
     <div class="tab reservation-tab ml-5">
       <ul class="tabs">
-        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'Subject'] as $index => $tab)
+        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'By Date'] as $index => $tab)
           <li class="bg-secondary  m-1">
             <a href="#" class="default-btn btn-bg-four border-radius-5 btn-spacing tab-link" data-tab-index="{{ $index }}">
               <span class="text-white h6">{{ $tab }}</span>
@@ -92,7 +92,7 @@
       </ul>
 
       <div class="tab_content current active pt-45">
-        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'Subject'] as $key => $searchBy)
+        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'By Date'] as $key => $searchBy)
           <div class="tabs_item {{ $key === 0 ? 'current' : '' }}" data-tab-index="{{ $key }}">
             <div class="reservation-tab-item printableArea">
               <div class="row">
@@ -100,7 +100,7 @@
                   <div class="side-bar-form">
                     <h3>Search By - {{ $searchBy }}</h3>
                     <form method="get"
-                      action="{{ in_array($searchBy, ['File Number', 'Date', 'Subject']) ? route('judgements.page') : '#' }}">
+                      action="{{ in_array($searchBy, ['File Number', 'Date', 'By Date']) ? route('judgements.page') : '#' }}">
                       <div class="row align-items-center">
                         <div class="col-lg-12">
                           <div class="form-group">
@@ -127,6 +127,16 @@
                               <i class='bx bx-file-blank'></i>
                             </div>
                           </div>
+                        @elseif ($searchBy === 'By Date')
+                          <div class="col-lg-12">
+                            <div class="form-group">
+                              <label class="h5">Search By Date</label>
+                              <div class="input-group">
+                                <input type="date" class="form-control search-input" placeholder="Date" id="searchdate">
+                                <span class="input-group-addon"></span>
+                              </div>
+                            </div>
+                          </div>
                         @elseif ($searchBy === 'Date')
                           <div class="col-lg-12">
                             <div class="form-group">
@@ -135,7 +145,7 @@
                                 <input type="date" class="form-control search-input" placeholder="Date" id="casedate">
                                 <span class="input-group-addon"></span>
                               </div>
-                              <i class='bx bx-calendar'></i>
+                           
                             </div>
                           </div>
                         @elseif ($searchBy !== 'Case Type')
@@ -148,7 +158,7 @@
                                 <span class="input-group-addon"></span>
                               </div>
                               <i
-                                class='bx {{ $searchBy === 'File Number' ? 'bx-file-blank' : ($searchBy === 'Party Name' ? 'bx-rename' : ($searchBy === 'Advocate' ? 'bx-user-pin' : 'bx-calendar-check')) }}'></i>
+                                class='bx {{ $searchBy === 'File Number' ? 'bx-file-blank' : ($searchBy === 'Party Name' ? 'bx-rename' : ($searchBy === 'Advocate' ? 'bx-user-pin' : '')) }}'></i>
                             </div>
                           </div>
                         @else

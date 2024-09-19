@@ -337,7 +337,7 @@ $(document).ready(function () {
             advocate: $("#advocate").val(),
             casetype: $("#casetype").val(),
             casedate: $("#casedate").val(),
-            subject: $("#subject").val(),
+            searchdate: $("#searchdate").val(),
         };
     }
 
@@ -510,37 +510,204 @@ $(document).ready(function () {
         );
     });
 
-    $("#filterButtonSubject").click(function () {
+    $("#filterButtonByDate").click(function () {
         var filters = {};
-        filters.subject = $("#subject").val();
-        var url = baseUrl + "?subject=" + filters.subject;
-        //   var url = `/cases/search/all?subject=${filters.subject}`;
-        var headers = ["S No", "Reg No", "Subject", "Petitioner", "Action"];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.regno}</td>
-                 <td class="petitioner-cell">${truncateText(
-                     item.subject,
-                     30
-                 )}</td>
-                <td class="petitioner-cell">${truncateText(
-                    item.petitioner,
-                    20
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button></td>`;
-        };
-        fetchJudgements(
-            url,
-            "dataTableSubject",
-            "No data available for given search.",
-            "paginationLinksSubject",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
+        filters.searchdate = $("#searchdate").val(); // Capture the search date
+    
+        // Ensure the date format is correct
+        function formatInputDate(dateString) {
+            if (typeof dateString !== "string") {
+                return dateString;
+            }
+            var date = dateString.split("-");
+            return date[2] + "-" + date[1] + "-" + date[0]; // Format to d-m-Y
+        }
+    
+        filters.searchdate = formatInputDate(filters.searchdate); // Format the input date
+    
+        var url = baseUrl + "?searchdate=" + filters.searchdate; // Build the query URL
+    
+        console.log("Fetching data from URL:", url); // Debugging: Log the generated URL
+    
+        var headers = ["S No", "Reg No", "Order Date", "Petitioner", "View", "PDF"];
+        var rowBuilder = function (item, index) {
+            // Safely check if interimJudgements exists and has data for each case
+            let interimJudgements = item.interim_judgements || []; // Fallback to an empty array if undefined
+            
+            // Check if there's at least one interim judgement and extract dol from interim_judgements
+            let dol = interimJudgements.length > 0 ? interimJudgements[0].dol : '';
+            let year =item.registration_no ? item.registration_no.slice(-4) : ''; // Extract last 4 characters of registration_no
 
+            // Check if there's at least one interim judgement and get pdfname
+            let pdfFilename = interimJudgements.length > 0 ? interimJudgements[0].pdfname : 'No PDF Available';
+    
+            // Construct the URL for the PDF (assuming the structure is similar to what you have)
+            let caseType = item.registration_no ? item.registration_no.slice(0, 2) : ''; // Extract first 2 characters of registration_no
+
+            let baseUrl = "https://aftdelhi.nic.in/assets/pending_cases/" + year + "/" + caseType + "/";
+            let pdfUrl = interimJudgements.length > 0 ? baseUrl + encodeURIComponent(interimJudgements[0].pdfname.trim()) : '#';
+    
+            // Return the row HTML with case information and interim judgement details
+            return `
+                <tr>
+                    <td class="regno-cell">${index + 1}</td>
+                    <td class="regno-cell">${item.registration_no || ''}</td>
+                    <td class="order-date-cell">${dol}</td> <!-- Use dol from interim_judgements -->
+                    <td class="petitioner-cell">${truncateText(item.applicant || '', 30)}</td>
+                    <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="openPdf('${pdfUrl}')">
+                            ${pdfFilename !== 'No PDF Available' ? 'Order' : 'NA'}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        };
+    
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                var cases = data.data || []; // CaseRegistration records
+    
+                // Clear the table before appending new data
+                $("#dataTableByDate tbody").empty();
+    
+                // Check if we have any cases to display
+                if (cases.length > 0) {
+                    cases.forEach((item, index) => {
+                        $("#dataTableByDate tbody").append(rowBuilder(item, index));
+                    });
+                } else {
+                    // If no cases found, display a message
+                    $("#dataTableByDate tbody").append('<tr><td colspan="6">No data available for the given search.</td></tr>');
+                }
+    
+                // Handle pagination if the data contains pagination information
+                if (data.pagination) {
+                    setupPagination(data.pagination, "paginationLinksByDate");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    });
+    
+    
+    
+    
+    function fetchJudgements(
+        baseUrl,
+        tableId,
+        noDataMessage,
+        paginationId,
+        filters,
+        headers,
+        rowBuilder
+    ) {
+        var url = new URL(baseUrl, window.location.origin);
+        Object.keys(filters).forEach((key) => {
+            if (filters[key]) {
+                url.searchParams.set(key, filters[key]); // Append filter parameters to the URL
+            }
+        });
+    
+        console.log("Final Request URL:", url.href); // Debugging: Log the final URL
+    
+        $.ajax({
+            url: url.href,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log("Response received:", response); // Debugging: Log the response
+    
+                $(`#${tableId} tbody`).empty();
+                $(`#${tableId} thead`).empty();
+                $(`#${tableId} tfoot`).empty();
+    
+                // Remove any existing record count display
+                $(".record-count").remove();
+    
+                if (response.data.length === 0) {
+                    var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
+                    $(`#${tableId} tbody`).append(noDataRow);
+                } else {
+                    var head = '<tr class="text-center">';
+                    headers.forEach((header) => {
+                        head += `<th class="header-cell">${header}</th>`;
+                    });
+                    head += "</tr>";
+                    $(`#${tableId} thead`).append(head);
+    
+                    $.each(response.data, function (index, item) {
+                        var row = "<tr>";
+                        row += `<td class="index-cell">${
+                            response.from + index
+                        }</td>`;
+                        row += rowBuilder(item);
+                        row += "</tr>";
+                        $(`#${tableId} tbody`).append(row);
+                    });
+    
+                    // Display the count of filtered records
+                    var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
+                    $(`#${paginationId}`).before(recordCount);
+    
+                    // Generate and display pagination links
+                    var paginationLinks = "";
+                    $.each(response.links, function (index, link) {
+                        if (link.url === null) {
+                            paginationLinks +=
+                                '<li class="page-item disabled"><span class="page-link">' +
+                                link.label +
+                                "</span></li>";
+                        } else {
+                            var filteredUrl = new URL(
+                                link.url,
+                                window.location.origin
+                            );
+                            Object.keys(filters).forEach((key) => {
+                                if (filters[key]) {
+                                    filteredUrl.searchParams.set(
+                                        key,
+                                        filters[key]
+                                    );
+                                }
+                            });
+                            paginationLinks +=
+                                '<li class="page-item' +
+                                (link.active ? " active" : "") +
+                                '"><a class="page-link" href="' +
+                                filteredUrl.href +
+                                '">' +
+                                link.label +
+                                "</a></li>";
+                        }
+                    });
+                    $(`#${paginationId}`).html(paginationLinks);
+    
+                    $(".page-link").click(function (event) {
+                        event.preventDefault();
+                        if ($(this).attr("href") !== undefined) {
+                            fetchJudgements(
+                                $(this).attr("href"),
+                                tableId,
+                                noDataMessage,
+                                paginationId,
+                                filters,
+                                headers,
+                                rowBuilder
+                            );
+                        }
+                    });
+    
+                    $(".modalData").click(handleModalDataClick);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred:", xhr.responseText); // Log error message
+            },
+        });
+    }
+    
     // $("#pdfButton").click(handleModalDataPDFClick);
 });
