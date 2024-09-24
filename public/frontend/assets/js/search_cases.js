@@ -149,7 +149,8 @@ $(document).ready(function () {
                     });
 
                     // Attach click event handler for modalData buttons
-                    $(".modalData").click(handleModalDataClick);
+                    $(document).on("click", ".modalData", handleModalDataClick);
+
                 }
             },
             error: function (xhr, status, error) {
@@ -172,11 +173,8 @@ $(document).ready(function () {
                             detailData.registration_no
                         }</p>
                         <p><strong>Year:</strong> ${detailData.year}</p>
-                        <p><strong>Department:</strong> ${
+                        <p><strong>Diary No:</strong> ${
                             detailData.diaryno
-                        }</p>
-                        <p><strong>Associated:</strong> ${
-                            detailData.case_type
                         }</p>
                         <p><strong>DOR:</strong> ${detailData.dor}</p>
                     </div>
@@ -209,11 +207,9 @@ $(document).ready(function () {
                         <h5>PDF Documents</h5>
                         ${detailData.interim_judgements
                             .map((judgement) => {
-                                var year = detailData.dor.split("-")[2];
+                                let case_type = detailData.registration_no ? detailData.registration_no.slice(0, 2) : ''; // Extract first 2 characters of registration_no
 
-                                var case_type = getCaseType(
-                                    detailData.case_type
-                                );
+                                var year = detailData.dor.split("-")[2];
 
                                 var baseUrl =
                                     "https://aftdelhi.nic.in/assets/pending_cases/" +
@@ -356,9 +352,7 @@ $(document).ready(function () {
                     item.applicant,
                     30
                 )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View Details</button>
+                <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View Details</button>
             `;
         };
         fetchJudgements(
@@ -529,7 +523,7 @@ $(document).ready(function () {
     
         console.log("Fetching data from URL:", url); // Debugging: Log the generated URL
     
-        var headers = ["S No", "Reg No", "Order Date", "Petitioner", "View", "PDF"];
+        var headers = ["S No", "Reg No", "Order Date", "Petitioner",  "View", "PDF"];
         var rowBuilder = function (item, index) {
             // Safely check if interimJudgements exists and has data for each case
             let interimJudgements = item.interim_judgements || []; // Fallback to an empty array if undefined
@@ -554,7 +548,7 @@ $(document).ready(function () {
                     <td class="regno-cell">${item.registration_no || ''}</td>
                     <td class="order-date-cell">${dol}</td> <!-- Use dol from interim_judgements -->
                     <td class="petitioner-cell">${truncateText(item.applicant || '', 30)}</td>
-                    <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>
+                    <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button>
                     <td>
                         <button class="btn btn-success btn-sm" onclick="openPdf('${pdfUrl}')">
                             ${pdfFilename !== 'No PDF Available' ? 'Order' : 'NA'}
@@ -699,8 +693,8 @@ $(document).ready(function () {
                             );
                         }
                     });
-    
-                    $(".modalData").click(handleModalDataClick);
+                    $(document).on("click", ".modalData", handleModalDataClick);
+
                 }
             },
             error: function (xhr, status, error) {

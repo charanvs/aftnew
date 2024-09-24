@@ -15,7 +15,7 @@ class AdvancedSearchController extends Controller
     {
         return view('frontend.search.index');
     }
-    public function searchPerform(Request $request)
+   public function searchPerform(Request $request)
 {
     if ($request->filled('search_type') && $request->filled('keyword')) {
         $searchType = $request->input('search_type');
@@ -101,22 +101,29 @@ class AdvancedSearchController extends Controller
                 break;
 
             default:
-                return redirect()->back()->with('error', 'Invalid search type.');
+                return response()->json(['error' => 'Invalid search type.'], 400);
         }
 
         if ($query) {
-            // Use pagination to optimize large result sets
-            $results = $query->paginate(20); // Fetch 20 results per page
+            
+            // Use pagination instead of get() and return 10 results per page
+            $results = $query->paginate(10)->appends($request->query());
 
-            // Debugging: Uncomment to check if results are retrieved
-            // dd($results->toArray());
+            // Load the partial Blade view and pass results to it
+            // $html = view('partials.search_results_table', compact('results', 'resultType', 'searchType'))->render();
 
-            return view('frontend.search.results', compact('results', 'searchType', 'resultType'));
+            // Return JSON with the generated HTML
+            return response()->json([
+                'html' => view('partials.search_results_table', compact('results', 'resultType', 'searchType'))->render(),
+                'pagination' => $results->links('vendor.pagination.custom')->render(),
+            ]);
+            
         }
     }
 
-    return redirect()->back()->with('error', 'Please provide a search type and keyword.');
+    return response()->json(['error' => 'Please provide a valid search type and keyword.'], 400);
 }
+
 
 
     public function viewCaseDetails($id)

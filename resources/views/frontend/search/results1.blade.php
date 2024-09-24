@@ -185,7 +185,6 @@
                     data-target="#caseModal{{ $item->id }}">
                     View
                   </button>
-
                   <!-- First Modal -->
                   @if ($resultType === 'Order' or $resultType === 'Judgement')
                     <div class="modal fade" id="caseModal{{ $item->id }}" tabindex="-1"

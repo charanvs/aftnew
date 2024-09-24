@@ -79,8 +79,8 @@ Route::controller(CaseManagementController::class)->group(function () {
     Route::get('/cases/search/all', 'CaseSearch')->name('cases.search.all');
     Route::get('/cases/search/show', 'ShowCasesData')->name('case.show');
     Route::get('/pdf/{id}', 'GeneratePDF')->name('generate.pdf');
-    Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
-    Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
+    // Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
+    // Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
 });
 
 //  Advanced Search Routes

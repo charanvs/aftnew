@@ -28,4 +28,6 @@ class CaseRegistration extends Model
         return $this->hasMany(InterimJudgement::class, 'regid', 'id')
             ->orderByRaw("STR_TO_DATE(dol, '%d-%m-%Y') ASC");
     }
+
+    
 }

@@ -49,18 +49,24 @@ class CaseManagementController extends Controller
         $query->where('dol', $request->casedate);
     }
 
-    // Searching within interim_judgements table for 'dol' and eager loading pdfname
     // Search by interim_judgements based on dol
-    if ($request->has('searchdate')) {
-        // Filter CaseRegistrations that have related InterimJudgements with matching dol
-        $query->whereHas('interimJudgements', function ($q) use ($request) {
-            $q->where('dol', $request->searchdate);
-        })
-        ->with(['interimJudgements' => function ($q) use ($request) {
-            $q->where('dol', $request->searchdate)
-              ->select('id', 'regid', 'dol', 'pdfname'); // Select only required fields
-        }]);
-    }
+// Search by interim_judgements dol and eager loading pdfname, also join case_dependencies for courtno and coram
+if ($request->has('searchdate')) {
+    // Filter CaseRegistrations that have related InterimJudgements with matching dol
+    $query->whereHas('interimJudgements', function ($q) use ($request) {
+        $q->where('dol', $request->searchdate);
+    })
+    ->with(['interimJudgements' => function ($q) use ($request) {
+        $q->where('dol', $request->searchdate)
+          ->select('id', 'regid', 'dol', 'pdfname'); // Select only required fields
+    }])
+    // Include CaseDependency data (courtno and coram)
+    ->with(['caseDependency' => function ($q) {
+        
+        $q->select('id', 'regid', 'courtno', 'coram'); // Select fields from CaseDependency
+    }]);
+
+}
 
     // Paginate results
     $cases = $query->paginate(10);
