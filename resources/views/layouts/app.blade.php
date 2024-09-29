@@ -159,7 +159,11 @@
   <script src="{{ asset('frontend/assets/js/custom.js') }}"></script>
   <script src="{{ asset('backend/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('backend/assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+  
   <script src="{{ asset('backend/assets/plugins/metismenu/js/metisMenu.min.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  
+  <script src="{{ asset('backend/assets/plugins/select2/js/select2-custom.js') }}"></script>
   <script>
     $(document).ready(function() {
       $('#example').DataTable();
@@ -176,6 +180,9 @@
         .appendTo('#example2_wrapper .col-md-6:eq(0)');
     });
   </script>
+    <!-- Ensure this is here to render scripts pushed from partials like search_results_table.blade.php -->
+    {{-- @stack('scripts') --}}
+
 </body>
 
 </html>

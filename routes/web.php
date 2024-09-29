@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\GalleryController;
 use App\Http\Controllers\Backend\BenchController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Utility\SqlUtilityController;
+use App\Http\Controllers\Utility\ExportController;
 use App\Http\Controllers\Util\CopyDataController;
 use App\Http\Controllers\Backend\NewRecordController;
 use App\Http\Controllers\Backend\JudgementBackendController;
@@ -87,6 +88,8 @@ Route::controller(CaseManagementController::class)->group(function () {
 Route::controller(AdvancedSearchController::class)->group(function () {
     Route::get('/advanced/search', 'AdvancedSearch')->name('advanced.search');
     Route::get('/advanced/search/perform', 'searchPerform')->name('advanced.search.perform');
+    Route::get('/column/search/perform', 'columnSearch')->name('advanced.column.search');
+
 });
 
 // Frontend Routes
@@ -206,3 +209,7 @@ Route::post('/sql-utility/validate', [SqlUtilityController::class, 'validateSql'
 Route::get('/sql-utility/tables', [SqlUtilityController::class, 'getTables']);
 
 Route::get('/events', [EventController::class, 'getEvents'])->name('events.get');
+
+Route::get('export/excel', [ExportController::class, 'index']);
+Route::get('/export', [ExportController::class, 'showExportForm'])->name('export.form');
+Route::post('/export', [ExportController::class, 'export'])->name('export');

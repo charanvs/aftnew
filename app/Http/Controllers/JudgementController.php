@@ -25,10 +25,6 @@ class JudgementController extends Controller
     {
         $query = Judgement::query();
 
-        // if ($request->has('fileno') && $request->has('year')) {
-        //     $query->where('file_no', $request->fileno)->where('year', $request->year);
-        // }
-        
         if ($request->has('fileno')) {
             $query->where('regno', 'LIKE', '%' . $request->fileno . '%');
         }
@@ -52,8 +48,17 @@ class JudgementController extends Controller
         if ($request->has('subject')) {
             $query->where('subject', 'LIKE', '%' . $request->subject . '%');
         }
+        if ($request->has('judges')) {
+            $query->where(function ($query) use ($request) {
+                $query->where('corum', 'LIKE', $request->judges)
+                    ->orWhere('corum', 'LIKE', $request->judges . ',%')
+                    ->orWhere('corum', 'LIKE', '%,' . $request->judges . ',%')
+                    ->orWhere('corum', 'LIKE', '%,' . $request->judges);
+            });
+        }
+        
 
-        $judgements = $query->paginate(10);
+        $judgements = $query->paginate(2000);
 
         // Include corum descriptions in the response
         foreach ($judgements as $judgement) {
@@ -183,4 +188,27 @@ class JudgementController extends Controller
 
         return view('frontend.judgements.review_cases');
     }
+
+    public function getJudgesList(Request $request)
+{
+    $search = $request->input('search');
+    $page = $request->input('page', 1);
+    $limit = 10; // Number of items per page
+
+    // Fetch judges from the database with pagination
+    $query = DB::table('aft_corum')
+        ->where('name', 'like', "%$search%")
+        ->paginate($limit, ['*'], 'page', $page);
+
+    $results = $query->items();
+    $morePages = $query->hasMorePages();
+
+    return response()->json([
+        'items' => $results,
+        'pagination' => [
+            'more' => $morePages
+        ]
+    ]);
+}
+
 }

@@ -778,6 +778,128 @@
     ),
     'compiled' => 'C:\\wamp64\\www\\aftnew\\storage\\framework\\views',
   ),
+  'excel' => 
+  array (
+    'exports' => 
+    array (
+      'chunk_size' => 1000,
+      'pre_calculate_formulas' => false,
+      'strict_null_comparison' => false,
+      'csv' => 
+      array (
+        'delimiter' => ',',
+        'enclosure' => '"',
+        'line_ending' => '
+',
+        'use_bom' => false,
+        'include_separator_line' => false,
+        'excel_compatibility' => false,
+        'output_encoding' => '',
+        'test_auto_detect' => true,
+      ),
+      'properties' => 
+      array (
+        'creator' => '',
+        'lastModifiedBy' => '',
+        'title' => '',
+        'description' => '',
+        'subject' => '',
+        'keywords' => '',
+        'category' => '',
+        'manager' => '',
+        'company' => '',
+      ),
+    ),
+    'imports' => 
+    array (
+      'read_only' => true,
+      'ignore_empty' => false,
+      'heading_row' => 
+      array (
+        'formatter' => 'slug',
+      ),
+      'csv' => 
+      array (
+        'delimiter' => NULL,
+        'enclosure' => '"',
+        'escape_character' => '\\',
+        'contiguous' => false,
+        'input_encoding' => 'guess',
+      ),
+      'properties' => 
+      array (
+        'creator' => '',
+        'lastModifiedBy' => '',
+        'title' => '',
+        'description' => '',
+        'subject' => '',
+        'keywords' => '',
+        'category' => '',
+        'manager' => '',
+        'company' => '',
+      ),
+      'cells' => 
+      array (
+        'middleware' => 
+        array (
+        ),
+      ),
+    ),
+    'extension_detector' => 
+    array (
+      'xlsx' => 'Xlsx',
+      'xlsm' => 'Xlsx',
+      'xltx' => 'Xlsx',
+      'xltm' => 'Xlsx',
+      'xls' => 'Xls',
+      'xlt' => 'Xls',
+      'ods' => 'Ods',
+      'ots' => 'Ods',
+      'slk' => 'Slk',
+      'xml' => 'Xml',
+      'gnumeric' => 'Gnumeric',
+      'htm' => 'Html',
+      'html' => 'Html',
+      'csv' => 'Csv',
+      'tsv' => 'Csv',
+      'pdf' => 'Dompdf',
+    ),
+    'value_binder' => 
+    array (
+      'default' => 'Maatwebsite\\Excel\\DefaultValueBinder',
+    ),
+    'cache' => 
+    array (
+      'driver' => 'memory',
+      'batch' => 
+      array (
+        'memory_limit' => 60000,
+      ),
+      'illuminate' => 
+      array (
+        'store' => NULL,
+      ),
+      'default_ttl' => 10800,
+    ),
+    'transactions' => 
+    array (
+      'handler' => 'db',
+      'db' => 
+      array (
+        'connection' => NULL,
+      ),
+    ),
+    'temporary_files' => 
+    array (
+      'local_path' => 'C:\\wamp64\\www\\aftnew\\storage\\framework/cache/laravel-excel',
+      'local_permissions' => 
+      array (
+      ),
+      'remote_disk' => NULL,
+      'remote_prefix' => NULL,
+      'force_resync_remote' => NULL,
+    ),
+  ),
   'flare' => 
   array (
     'key' => NULL,
@@ -888,6 +1010,62 @@
       8 => 'Spatie\\LaravelIgnition\\ArgumentReducers\\ModelArgumentReducer',
       9 => 'Spatie\\LaravelIgnition\\ArgumentReducers\\CollectionArgumentReducer',
       10 => 'Spatie\\Backtrace\\Arguments\\Reducers\\StringableArgumentReducer',
+    ),
+  ),
+  'datatables' => 
+  array (
+    'search' => 
+    array (
+      'smart' => true,
+      'multi_term' => true,
+      'case_insensitive' => true,
+      'use_wildcards' => false,
+      'starts_with' => false,
+    ),
+    'index_column' => 'DT_RowIndex',
+    'engines' => 
+    array (
+      'eloquent' => 'Yajra\\DataTables\\EloquentDataTable',
+      'query' => 'Yajra\\DataTables\\QueryDataTable',
+      'collection' => 'Yajra\\DataTables\\CollectionDataTable',
+      'resource' => 'Yajra\\DataTables\\ApiResourceDataTable',
+    ),
+    'builders' => 
+    array (
+    ),
+    'nulls_last_sql' => ':column :direction NULLS LAST',
+    'error' => NULL,
+    'columns' => 
+    array (
+      'excess' => 
+      array (
+        0 => 'rn',
+        1 => 'row_num',
+      ),
+      'escape' => '*',
+      'raw' => 
+      array (
+        0 => 'action',
+      ),
+      'blacklist' => 
+      array (
+        0 => 'password',
+        1 => 'remember_token',
+      ),
+      'whitelist' => '*',
+    ),
+    'json' => 
+    array (
+      'header' => 
+      array (
+      ),
+      'options' => 0,
+    ),
+    'callback' => 
+    array (
+      0 => '$',
+      1 => '$.',
+      2 => 'function',
     ),
   ),
   'tinker' => 

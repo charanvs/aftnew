@@ -6,8 +6,7 @@
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
 @section('main')
 <div class="container mt-5">
   <h6 class="mb-0 text-uppercase">Advanced Search</h6>
@@ -92,24 +91,8 @@
 
 <!-- JavaScript section -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery and DataTables JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        // Initialize DataTables after the results are displayed
-        $('#resultTable').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true
-        });
-    });
-
 // Declare selectedCategory globally
 let selectedCategory = null;
 
@@ -131,22 +114,33 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
 });
 
 function fetchResults(searchType, keyword, page = 1) {
-    // Construct the query parameters for the GET request using the Laravel route helper
     let url = `${baseUrl}?search_type=${encodeURIComponent(searchType)}&keyword=${encodeURIComponent(keyword)}&page=${page}`;
 
     // Fetch the search results using AJAX
     fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // Hide the loader
-            document.getElementById('loader').style.display = 'none';
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // Get the raw text response
+        })
+        .then(text => {
+            try {
+                // Try to parse the text as JSON
+                let data = JSON.parse(text);
 
-            if (data.html) {
-                // Safely insert the HTML content without escaping
-                document.getElementById('searchResults').innerHTML = data.html;
-                document.getElementById('paginationLinks').innerHTML = data.pagination;
-            } else if (data.error) {
-                alert(data.error); // Handle error if any
+                // Hide the loader
+                document.getElementById('loader').style.display = 'none';
+
+                if (data.html) {
+                    document.getElementById('searchResults').innerHTML = data.html;
+                    document.getElementById('paginationLinks').innerHTML = data.pagination;
+                } else if (data.error) {
+                    alert(data.error); // Handle error if any
+                }
+            } catch (err) {
+                console.error('Error parsing JSON:', err);
+                console.error('Raw response:', text); // Log the raw response for debugging
             }
         })
         .catch(error => {
@@ -154,6 +148,7 @@ function fetchResults(searchType, keyword, page = 1) {
             document.getElementById('loader').style.display = 'none';
         });
 }
+
 // Define updateDropdown function
 function updateDropdown(event, dropdownId, text, value, category, placeholder) {
   event.preventDefault(); // Prevent the default action of the link
@@ -230,6 +225,50 @@ document.addEventListener('click', function(event) {
       };
     };
   }
+</script>
+<script>
+ // JavaScript for handling the search
+$(document).ready(function() {
+  var table = $('#resultTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: "{{ route('advanced.search.perform') }}",
+      data: function(d) {
+        // Ensure both search_type and keyword are passed
+        var searchType = $('#search_type').val();
+        var keyword = $('#keyword').val();
+
+        // Check if both parameters are present
+        if (!searchType || !keyword) {
+          alert("Please provide both search type and keyword.");
+          return false;  // Abort the request
+        }
+
+        d.search_type = searchType; // Set search type
+        d.keyword = keyword;        // Set keyword
+      }
+    },
+    columns: [
+      { data: 'id', name: 'id' },
+      { data: 'registration_no', name: 'registration_no' },
+      { data: 'applicant', name: 'applicant' },
+      { data: 'radvocate', name: 'radvocate' },
+      { data: 'padvocate', name: 'padvocate' },
+      { data: 'dependency_dol', name: 'dependency_dol' },
+      { data: 'courtno', name: 'courtno' },
+      { data: 'action', name: 'action', orderable: false, searchable: false }
+    ]
+  });
+
+  // Handle form submission
+  $('#searchForm').on('submit', function(e) {
+    e.preventDefault();  // Prevent the form from being submitted the traditional way
+    table.ajax.reload();  // Reload DataTable with new search criteria
+  });
+});
+
+
 </script>
 
 @endsection

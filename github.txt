@@ -11,5 +11,5 @@ git branch -M main
 git push -u origin main
 
 git add .
-git commit -m "By date case daily orders search included on 19.09.2024."
+git commit -m "Advanced Search 1 on 24.09.2024."
 git push -u origin main

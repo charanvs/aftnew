@@ -31,13 +31,40 @@
   .radvocate-cell {
     font-size: 18px;
   }
+
+  .loader {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #3498db;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
 </style>
 
 <div class="reservation-widget-area pt-60 pb-70">
   <div class="container ml-5">
     <div class="tab reservation-tab ml-5">
       <ul class="tabs">
-        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'Subject', 'Hon\'ble Judges'] as $tab)
+        @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'Subject', 'Judges'] as $tab)
           <li class="bg-secondary  m-1">
             <a href="#" class="default-btn btn-bg-four border-radius-5 btn-spacing">
               <span class="text-white h6">{{ $tab }}</span>
@@ -47,7 +74,7 @@
       </ul>
 
       <div class="tab_content current active pt-45">
-        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'Subject', 'Hon\'ble Judges'] as $key => $searchBy)
+        @foreach (['File Number', 'Party Name', 'Advocate', 'Case Type', 'Date', 'Subject', 'Judges'] as $key => $searchBy)
           <div class="tabs_item {{ $key === 0 ? 'current' : '' }}">
             <div class="reservation-tab-item">
               <div class="row">
@@ -93,15 +120,22 @@
                               <i class='bx bx-calendar'></i>
                             </div>
                           </div>
-                        @elseif ($searchBy === 'Hon\'ble Judges')
+                        @elseif ($searchBy === 'Judges')
+                          <!-- Ensure Only One Dropdown Exists -->
                           <div class="col-lg-12">
-                            <div class="form-group">
-                              <label class="h5">Hon'ble Judge Name</label>
-                              <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Judge Name" id="judgeName">
-                                <span class="input-group-addon"></span>
-                              </div>
-                              <i class='bx bx-user'></i>
+                            <div class="form-group mb-3">
+                              <!-- The Single Select Dropdown -->
+                              <select class="js-example-basic-single" id="judges">
+                              <option value="">Please select</option>
+                            @php
+                                $corum = DB::table('aft_corum')->orderBy('id', 'desc')->pluck('name', 'id'); // Fetching corum data from the database
+                            @endphp
+                            @foreach($corum as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                              </select>                                  
+                                 
+                              </select>
                             </div>
                           </div>
                         @elseif ($searchBy !== 'Case Type')
@@ -143,12 +177,12 @@
                             </div>
                           </div>
                         @endif
-                        @if ($searchBy === 'Hon\'ble Judges')
+                        @if ($searchBy === 'Judges')
                           <div class="col-lg-12 col-md-12">
-                            <a href="{{ route('judgements.search.judges') }}" type="button"
+                            <button id="filterButtonJudges" type="button"
                               class="default-btn btn-bg-three border-radius-5">
-                              Search Hon'ble Judges
-                            </a>
+                              Search Judges
+                            </button>
                           </div>
                         @else
                           <div class="col-lg-12 col-md-12">
@@ -167,14 +201,10 @@
                   <div class="reservation-widget-content">
                     <h2>Details of Judgements - {{ $searchBy }}</h2>
                     <hr>
-                    <table id="dataTable{{ str_replace(' ', '', $searchBy) }}" class="table bg-secondary text-white">
+                    <table id="dataTable{{ str_replace(' ', '', $searchBy) }}" class="table text-white bg-secondary" >
                       <thead></thead>
                       <tbody></tbody>
-                      <tfoot>
-                        <nav aria-label="Page navigation example">
-                          <ul class="pagination" id="paginationLinks{{ str_replace(' ', '', $searchBy) }}"></ul>
-                        </nav>
-                      </tfoot>
+                      
                     </table>
 
                   </div>
@@ -187,22 +217,6 @@
     </div>
   </div>
 </div>
-
-<!-- Help Section -->
-<div class="help-section mt-5">
-    <div class="container">
-      <h3>Help - Tab Navigation</h3>
-      <ul>
-        <li>Key r - Registration No Search</li>
-        <li>Key p - Party Name Search</li>
-        <li>Key a - Advocate Search</li>
-        <li>Key c - Case Type Search</li>
-        <li>Key d - Next Date Search</li>
-        <li>Key s - Subject Search</li>
-        <li>Key j - Hon'ble Judges Search</li>
-      </ul>
-    </div>
-  </div>
 
 <!-- Modals -->
 <div class="modal fade" id="myModal" tabindex="-1" aria-hidden="true">
@@ -239,6 +253,65 @@
   </div>
 </div>
 
+<!-- Include Select2 CSS and JS -->
+
+<script>
+  $(document).ready(function() {
+    // Print functionality
+    $(document).on('click', '#printButton', function() {
+      const printContents = document.querySelector("#myModal .modal-body").innerHTML;
+      const modalTitle = $("#myModalLabel").text();
+      const printWindow = window.open("", "_blank");
+      printWindow.document.write(`
+        <html>
+        <head>
+            <title>${modalTitle}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                .container {
+                    margin: 0 auto;
+                    width: 80%;
+                }
+                .row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-bottom: 20px;
+                }
+                .col-md-6 {
+                    flex: 0 0 50%;
+                    max-width: 50%;
+                }
+                .col-md-12 {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                }
+                h5 {
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+                p {
+                    margin: 5px 0;
+                }
+                .btn {
+                    display: none;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>${modalTitle}</h1>
+            <div class="container">
+                ${printContents}
+            </div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    });
+  });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -251,107 +324,4 @@
   var pdfUrl = "{{ route('judgements.pdf') }}";
 </script>
 <script src="{{ asset('frontend/assets/js/mytabs.js') }}"></script>
-
-<script>
-    $(document).ready(function() {
-        // Shortcut keys for tabs
-        $(document).keydown(function(e) {
-            switch (e.which) {
-                case 82: // Key r
-                    $('.tabs li:nth-child(1) a').click();
-                    break;
-                case 80: // Key p
-                    $('.tabs li:nth-child(2) a').click();
-                    break;
-                case 65: // Key a
-                    $('.tabs li:nth-child(3) a').click();
-                    break;
-                case 67: // Key c
-                    $('.tabs li:nth-child(4) a').click();
-                    break;
-                case 68: // Key d
-                    $('.tabs li:nth-child(5) a').click();
-                    break;
-                case 83: // Key s
-                    $('.tabs li:nth-child(6) a').click();
-                    break;
-                case 74: // Key j for Judges
-                    $('.tabs li:nth-child(7) a').click();
-                    break;
-                default:
-                    return;
-            }
-            e.preventDefault();
-        });
-
-        // Tab switching functionality
-        $('.tabs li a').click(function(e) {
-            e.preventDefault();
-            var tabIndex = $(this).parent().index();
-
-            $('.tabs_item').removeClass('current');
-            $('.tabs_item').eq(tabIndex).addClass('current');
-
-            $('.tabs li').removeClass('current');
-            $(this).parent().addClass('current');
-        });
-    });
-    $(document).ready(function() {
-
-      // Print functionality
-      $(document).on('click', '#printButton', function() {
-        const printContents = document.querySelector("#myModal .modal-body").innerHTML;
-        const modalTitle = $("#myModalLabel").text();
-        const printWindow = window.open("", "_blank");
-        printWindow.document.write(`
-          <html>
-          <head>
-              <title>${modalTitle}</title>
-              <style>
-                  body {
-                      font-family: Arial, sans-serif;
-                  }
-                  .container {
-                      margin: 0 auto;
-                      width: 80%;
-                  }
-                  .row {
-                      display: flex;
-                      flex-wrap: wrap;
-                      margin-bottom: 20px;
-                  }
-                  .col-md-6 {
-                      flex: 0 0 50%;
-                      max-width: 50%;
-                  }
-                  .col-md-12 {
-                      flex: 0 0 100%;
-                      max-width: 100%;
-                  }
-                  h5 {
-                      font-size: 18px;
-                      margin-bottom: 10px;
-                  }
-                  p {
-                      margin: 5px 0;
-                  }
-                  .btn {
-                      display: none;
-                  }
-              </style>
-          </head>
-          <body>
-              <h1>${modalTitle}</h1>
-              <div class="container">
-                  ${printContents}
-              </div>
-          </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-      });
-    });
-  </script>
-
 @endsection

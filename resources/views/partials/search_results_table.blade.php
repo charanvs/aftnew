@@ -27,7 +27,6 @@
           $case = null;
           $interimJudgements = collect(); // Initialize as an empty collection
           $notifications = collect(); // Initialize as an empty collection
-
           // Check the result type and set the $case variable accordingly
           if ($resultType === 'Order') {
               $case = \App\Models\CaseRegistration::find($item->id);
@@ -125,7 +124,6 @@
                           @foreach ($interimJudgements as $judgement)
                             @php
                               $year = $resultType === 'Order' ? substr($judgement->dol, -4) : $year_judgement;
-
                               $pdfUrl =
                                   'https://aftdelhi.nic.in/assets/' .
                                   $folder_path .
@@ -231,7 +229,7 @@
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                       <button type="button" class="btn btn-primary"
                       onClick="printModalContent('caseModal{{ $item->id }}')">Print</button>
-                  
+
                     </div>
                   </div>
                 </div>
@@ -250,6 +248,3 @@
 @endif
 
 <script src="{{asset('script.js')}}"></script>
-
-
-

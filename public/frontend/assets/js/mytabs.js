@@ -12,6 +12,10 @@ function openPdf(pdfUrl) {
 
 $(document).ready(function () {
     function clearTableContents() {
+        // Destroy any existing DataTable instance
+        if ($.fn.DataTable.isDataTable(".table")) {
+            $(".table").DataTable().clear().destroy();
+        }
         $(".table tbody").empty();
         $(".table thead").empty();
         $(".table tfoot nav").empty();
@@ -49,6 +53,7 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (response) {
+                // Clear any previous table contents
                 $(`#${tableId} tbody`).empty();
                 $(`#${tableId} thead`).empty();
                 $(`#${tableId} tfoot`).empty();
@@ -60,6 +65,7 @@ $(document).ready(function () {
                     var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
                     $(`#${tableId} tbody`).append(noDataRow);
                 } else {
+                    // Generate table headers
                     var head = '<tr class="text-center">';
                     headers.forEach((header) => {
                         head += `<th class="header-cell">${header}</th>`;
@@ -67,11 +73,10 @@ $(document).ready(function () {
                     head += "</tr>";
                     $(`#${tableId} thead`).append(head);
 
+                    // Append table rows with fetched data
                     $.each(response.data, function (index, item) {
                         var row = "<tr>";
-                        row += `<td class="index-cell">${
-                            response.from + index
-                        }</td>`;
+                        row += `<td class="index-cell">${response.from + index}</td>`;
                         row += rowBuilder(item);
                         row += "</tr>";
                         $(`#${tableId} tbody`).append(row);
@@ -81,52 +86,13 @@ $(document).ready(function () {
                     var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
                     $(`#${paginationId}`).before(recordCount);
 
-                    // Generate and display pagination links
-                    var paginationLinks = "";
-                    $.each(response.links, function (index, link) {
-                        if (link.url === null) {
-                            paginationLinks +=
-                                '<li class="page-item disabled"><span class="page-link">' +
-                                link.label +
-                                "</span></li>";
-                        } else {
-                            var filteredUrl = new URL(
-                                link.url,
-                                window.location.origin
-                            );
-                            Object.keys(filters).forEach((key) => {
-                                if (filters[key]) {
-                                    filteredUrl.searchParams.set(
-                                        key,
-                                        filters[key]
-                                    );
-                                }
-                            });
-                            paginationLinks +=
-                                '<li class="page-item' +
-                                (link.active ? " active" : "") +
-                                '"><a class="page-link" href="' +
-                                filteredUrl.href +
-                                '">' +
-                                link.label +
-                                "</a></li>";
-                        }
-                    });
-                    $(`#${paginationId}`).html(paginationLinks);
-
-                    $(".page-link").click(function (event) {
-                        event.preventDefault();
-                        if ($(this).attr("href") !== undefined) {
-                            fetchJudgements(
-                                $(this).attr("href"),
-                                tableId,
-                                noDataMessage,
-                                paginationId,
-                                filters,
-                                headers,
-                                rowBuilder
-                            );
-                        }
+                    // Initialize DataTable
+                    $(`#${tableId}`).DataTable({
+                        "paging": true, // Enable pagination
+                        "searching": true, // Enable search
+                        "ordering": true, // Enable sorting
+                        "info": true, // Show table info
+                        "destroy": true // Ensure reinitialization on every fetch
                     });
 
                     // Attach click event handler for modalData buttons
@@ -154,147 +120,39 @@ $(document).ready(function () {
                 modalBody += '<div class="row">';
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Basic Information</h5>";
-                modalBody +=
-                    "<p><strong>Reg No:</strong> " + detailData.regno + "</p>";
-                modalBody +=
-                    "<p><strong>Year:</strong> " + detailData.year + "</p>";
-                modalBody +=
-                    "<p><strong>Department:</strong> " +
-                    detailData.deptt +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>Associated:</strong> " +
-                    detailData.associated +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>DOR:</strong> " + detailData.dor + "</p>";
+                modalBody += "<p><strong>Reg No:</strong> " + detailData.regno + "</p>";
+                modalBody += "<p><strong>Year:</strong> " + detailData.year + "</p>";
+                modalBody += "<p><strong>Department:</strong> " + detailData.deptt + "</p>";
+                modalBody += "<p><strong>Associated:</strong> " + detailData.associated + "</p>";
+                modalBody += "<p><strong>DOR:</strong> " + detailData.dor + "</p>";
                 modalBody += "</div>";
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Advocates</h5>";
-                modalBody +=
-                    "<p><strong>Petitioner Advocate:</strong> " +
-                    detailData.padvocate +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>Respondent Advocate:</strong> " +
-                    detailData.radvocate +
-                    "</p>";
+                modalBody += "<p><strong>Petitioner Advocate:</strong> " + detailData.padvocate + "</p>";
+                modalBody += "<p><strong>Respondent Advocate:</strong> " + detailData.radvocate + "</p>";
                 modalBody += "</div>";
                 modalBody += "</div>"; // End of row
                 modalBody += '<div class="row">';
                 modalBody += '<div class="col-md-12">';
-                modalBody +=
-                    "<p><strong>Subject:</strong> " +
-                    detailData.subject +
-                    "</p>";
+                modalBody += "<p><strong>Subject:</strong> " + detailData.subject + "</p>";
                 modalBody += "</div>";
                 modalBody += "</div>";
                 modalBody += '<div class="row">';
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Case Information</h5>";
-                modalBody +=
-                    "<p><strong>Petitioner:</strong> " +
-                    detailData.petitioner +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>Respondent:</strong> " +
-                    detailData.associated +
-                    "</p>";
+                modalBody += "<p><strong>Petitioner:</strong> " + detailData.petitioner + "</p>";
+                modalBody += "<p><strong>Respondent:</strong> " + detailData.associated + "</p>";
                 modalBody += "</div>";
                 modalBody += '<div class="col-md-6">';
                 modalBody += "<h5>Court Information</h5>";
-                modalBody +=
-                    "<p><strong>Court No:</strong> " +
-                    detailData.court_no +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>Corum:</strong> " +
-                    detailData.corum_descriptions.join(", ") +
-                    "</p>";
-                modalBody +=
-                    "<p><strong>Remarks:</strong> " +
-                    detailData.remarks +
-                    "</p>";
+                modalBody += "<p><strong>Court No:</strong> " + detailData.court_no + "</p>";
+                modalBody += "<p><strong>Corum:</strong> " + detailData.corum_descriptions.join(", ") + "</p>";
+                modalBody += "<p><strong>Remarks:</strong> " + detailData.remarks + "</p>";
                 modalBody += "</div>";
                 modalBody += "</div>"; // End of row
 
-                var buttonsHtml = "";
-                var interimJudgements = detailData.interim_judgements;
-                for (var i = 0; i < interimJudgements.length; i++) {
-                    var judgement = interimJudgements[i];
-                    var year = detailData.dod.split("-")[2];
-                    var month = detailData.dod.split("-")[1];
-                    // Array of month names
-                    var monthNames = [
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July",
-                        "August",
-                        "September",
-                        "October",
-                        "November",
-                        "December",
-                    ];
-                    var monthName = monthNames[parseInt(month, 10) - 1];
-                    var case_type = detailData.case_type;
-                    var baseUrlD =
-                        "https://aftdelhi.nic.in/assets/disposed_cases/" +
-                        year +
-                        "/" +
-                        monthName +
-                        "/" +
-                        case_type +
-                        "/";
-                    var pdfUrlInterim =
-                        baseUrlD + encodeURIComponent(judgement.pdfname.trim());
-                    buttonsHtml += `<div class="col-md-3">
-                                        <button onclick="openPdf('${pdfUrlInterim}')" class="btn btn-sm btn-success mb-2">View PDF (${judgement.dol})</button>
-                                    </div>`;
-
-                    // Close and open a new row every 4 buttons
-                    if ((i + 1) % 4 === 0) {
-                        buttonsHtml += `</div><div class="row">`;
-                    }
-                }
-
-                // Close the last row if it was opened
-                if (interimJudgements.length % 4 !== 0) {
-                    buttonsHtml += `</div>`;
-                }
-
-                modalBody += `</div>`;
-                modalBody += "</div>";
-                modalBody += "<div>";
-                modalBody +=
-                    '<a href="' +
-                    detailData.pdfUrl +
-                    '" target="_blank">View PDF</a>';
-                modalBody += "</div>";
-                modalBody += "</div>"; // End of container
-
-                const modalFooterContent = `
-                <button id="printButton" class="btn btn-primary">Print</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            `;
-
                 $(".modal-body").html(modalBody);
-                $(".modal-footer").html(modalFooterContent);
-                $("#myModalLabel").text(modalTitle);
                 $("#myModal").modal("show");
-
-                $("#printButton").click(printModalContent);
-
-                // Open modal
-                $("#myModal").modal("show");
-
-                // Close Modal
-                $("#closeModalButton").click(function () {
-                    $("#myModal").modal("hide");
-                });
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
@@ -311,84 +169,19 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (detailData) {
-                var modalTitle = "Case PDF"; // Set modal title
-                var modalBody = ""; // Declare modalBody variable
                 var year = detailData.dod.split("-")[2];
                 var case_type = detailData.case_type;
-                var baseUrl =
-                    "https://aftdelhi.nic.in/assets/judgement/" +
-                    year +
-                    "/" +
-                    case_type +
-                    "/";
-                var pdfUrl =
-                    baseUrl + encodeURIComponent(detailData.dpdf.trim());
+                var baseUrl = "https://aftdelhi.nic.in/assets/judgement/" + year + "/" + case_type + "/";
+                var pdfUrl = baseUrl + encodeURIComponent(detailData.dpdf.trim());
 
-                // Open PDF in a new tab
                 var newWindow = window.open(pdfUrl, "_blank");
-                if (
-                    !newWindow ||
-                    newWindow.closed ||
-                    typeof newWindow.closed == "undefined"
-                ) {
-                    alert(
-                        "The PDF could not be opened. Please check your browser settings."
-                    );
+                if (!newWindow || newWindow.closed || typeof newWindow.closed == "undefined") {
+                    alert("The PDF could not be opened. Please check your browser settings.");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
-                alert(
-                    "An error occurred while trying to open the PDF. Please try again later."
-                );
-            },
-        });
-    }
-
-    function handleModalDataPDFClick() {
-        var id = $(this).data("id");
-
-        // Perform AJAX request to fetch data for the specific ID
-        $.ajax({
-            // url: "{{ route('judgements.show', ':id') }}".replace(':id', id),
-            url: pdfUrl + "?id=" + id,
-            type: "GET",
-            dataType: "json",
-            success: function (detailData) {
-                var modalTitle = "Case PDF"; // Set modal title
-                var modalFooter = "Click away to close this.";
-                var year = detailData.dod.split("-")[2];
-                var case_type = detailData.case_type;
-                var baseUrl =
-                    "https://aftdelhi.nic.in/assets/judgement/" +
-                    year +
-                    "/" +
-                    case_type +
-                    "/";
-                // alert(baseUrl);
-                var pdfUrl =
-                    baseUrl + encodeURIComponent(detailData.dpdf.trim());
-
-                // Open PDF in a new tab
-                //----------- comment if folder pdf is on your site ------**
-
-                // Try to open PDF in a new tab
-                var newWindow = window.open(pdfUrl, "_blank");
-                if (
-                    !newWindow ||
-                    newWindow.closed ||
-                    typeof newWindow.closed == "undefined"
-                ) {
-                    alert(
-                        "The PDF could not be opened. Please check your browser settings."
-                    );
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-                alert(
-                    "An error occurred while trying to open the PDF. Please try again later."
-                );
+                alert("An error occurred while trying to open the PDF. Please try again later.");
             },
         });
     }
@@ -399,14 +192,15 @@ $(document).ready(function () {
     function getFilters() {
         return {
             fileno: $("#fileno").val(),
-            // year: $("#year").val(),
             partyname: $("#partyname").val(),
             advocate: $("#advocate").val(),
             casetype: $("#casetype").val(),
             casedate: $("#casedate").val(),
             subject: $("#subject").val(),
+            judges: $("#judges").val(),
         };
     }
+
 
     $("#filterButtonFileNumber").click(function () {
         var filters = {};
@@ -636,6 +430,43 @@ $(document).ready(function () {
         );
     });
 
+    $("#filterButtonJudges").click(function () {
+        var filters = {};
+        filters.judges = $("#judges").val();
+        var url = baseUrl + "?judges=" + filters.judges;
+        // var url = `{{ route('judgements.search.all') }}?subject=${filters.subject}`;
+        var headers = ["S No", "Reg No", "Corum", "Petitioner", "Action"];
+        var rowBuilder = function (item) {
+            return `
+                <td class="regno-cell">${item.regno}</td>
+                 <td class="petitioner-cell">${truncateText(
+                     item.corum,
+                     30
+                 )}</td>
+                <td class="petitioner-cell">${truncateText(
+                    item.petitioner,
+                    20
+                )}</td>
+                <td><button class="btn btn-primary btn-sm modalData" data-id="${
+                    item.id
+                }">View</button>
+                    <button class="btn btn-secondary btn-sm modalDataPDF" data-id="${
+                        item.id
+                    }">PDF</button></td>
+            `;
+        };
+        fetchJudgements(
+            url,
+            "dataTableJudges",
+            "No data available for given search.",
+            "paginationLinksJudges",
+            filters,
+            headers,
+            rowBuilder
+        );
+    });
+    
+
     $(".modalDataPDF").click(handleModalDataPDFClick);
 });
 
@@ -650,3 +481,4 @@ function toggleTheme(isDarkMode) {
         modalContent.classList.add("light-mode");
     }
 }
+
