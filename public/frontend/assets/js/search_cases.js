@@ -33,279 +33,102 @@ $(document).ready(function () {
     function clearTableContents() {
         $(".table tbody").empty();
         $(".table thead").empty();
-        $(".table tfoot nav").empty();
         $(".record-count").remove();
     }
 
+    // Show loader function
+    function showLoader() {
+        $("#loader").show();
+    }
+
+    // Hide loader function
+    function hideLoader() {
+        $("#loader").hide();
+    }
+
     // Add event listeners to tab buttons
-    $(".tab ul.tabs li a").click(function (event) {
+    $(".tab ul.tabs li a").click(function () {
         clearTableContents();
     });
 
     // Event listener for search buttons
-    $(".default-btn.btn-bg-three.border-radius-5").click(function (event) {
+    $(".default-btn.btn-bg-three.border-radius-5").click(function () {
         clearTableContents();
     });
 
-    function fetchJudgements(
-        baseUrl,
-        tableId,
-        noDataMessage,
-        paginationId,
-        filters,
-        headers,
-        rowBuilder
-    ) {
-        var url = new URL(baseUrl, window.location.origin);
-        Object.keys(filters).forEach((key) => {
-            if (filters[key]) {
-                url.searchParams.set(key, filters[key]);
-            }
-        });
-
+    function fetchJudgements(url, table_id, no_data_message, filters, headers, row_builder) {
+        // Show loader before making AJAX request
+        showLoader();
+    
         $.ajax({
-            url: url.href,
+            url: url + "&t=" + new Date().getTime(), // Cache-busting
             type: "GET",
             dataType: "json",
+            data: filters, // Pass updated filters
             success: function (response) {
-                $(`#${tableId} tbody`).empty();
-                $(`#${tableId} thead`).empty();
-                $(`#${tableId} tfoot`).empty();
-
+                // Clear the table body and header
+                $(`#${table_id} tbody`).empty();
+                $(`#${table_id} thead`).empty();
+    
                 // Remove any existing record count display
                 $(".record-count").remove();
-
+    
+                // Check if there's no data
                 if (response.data.length === 0) {
-                    var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
-                    $(`#${tableId} tbody`).append(noDataRow);
+                    var no_data_row = `<tr><td colspan="5" class="text-center text-primary fw-bold">${no_data_message}</td></tr>`;
+                    $(`#${table_id} tbody`).append(no_data_row);
                 } else {
+                    // Rebuild the table header
                     var head = '<tr class="text-center">';
                     headers.forEach((header) => {
                         head += `<th class="header-cell">${header}</th>`;
                     });
                     head += "</tr>";
-                    $(`#${tableId} thead`).append(head);
-
+                    $(`#${table_id} thead`).append(head);
+    
+                    // Populate the table body with new rows
                     $.each(response.data, function (index, item) {
                         var row = "<tr>";
-                        row += `<td class="index-cell">${
-                            response.from + index
-                        }</td>`;
-                        row += rowBuilder(item);
+                        row += `<td class="index-cell">${response.from + index}</td>`;
+                        row += row_builder(item);
                         row += "</tr>";
-                        $(`#${tableId} tbody`).append(row);
+                        $(`#${table_id} tbody`).append(row);
                     });
-
-                    // Display the count of filtered records
-                    var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
-                    $(`#${paginationId}`).before(recordCount);
-
-                    // Generate and display pagination links
-                    var paginationLinks = "";
-                    $.each(response.links, function (index, link) {
-                        if (link.url === null) {
-                            paginationLinks +=
-                                '<li class="page-item disabled"><span class="page-link">' +
-                                link.label +
-                                "</span></li>";
-                        } else {
-                            var filteredUrl = new URL(
-                                link.url,
-                                window.location.origin
-                            );
-                            Object.keys(filters).forEach((key) => {
-                                if (filters[key]) {
-                                    filteredUrl.searchParams.set(
-                                        key,
-                                        filters[key]
-                                    );
-                                }
-                            });
-                            paginationLinks +=
-                                '<li class="page-item' +
-                                (link.active ? " active" : "") +
-                                '"><a class="page-link" href="' +
-                                filteredUrl.href +
-                                '">' +
-                                link.label +
-                                "</a></li>";
+    
+                    // Ensure DataTable is properly destroyed and re-initialized
+                    if ($.fn.DataTable.isDataTable(`#${table_id}`)) {
+                        $(`#${table_id}`).DataTable().destroy(); // Destroy DataTable before reinitialization
+                    }
+    
+                    // Reinitialize DataTable with the updated data
+                    $(`#${table_id}`).DataTable({
+                        responsive: true, // Make the table responsive
+                        pageLength: 10, // Show 10 entries per page
+                        lengthChange: true,  // Show entries dropdown
+                        searching: true,  // Enable search input
+                        paging: true,  // Enable pagination
+                        info: true,  // Show "Showing X of Y entries"
+                        ordering: true,  // Enable column sorting
+                        columnDefs: [
+                            { responsivePriority: 1, targets: 0 },  // First column priority
+                            { responsivePriority: 2, targets: -1 }  // Last column priority (View button)
+                        ],
+                        initComplete: function () {
+                            hideLoader();  // Hide the loader when table is initialized
                         }
                     });
-                    $(`#${paginationId}`).html(paginationLinks);
-
-                    $(".page-link").click(function (event) {
-                        event.preventDefault();
-                        if ($(this).attr("href") !== undefined) {
-                            fetchJudgements(
-                                $(this).attr("href"),
-                                tableId,
-                                noDataMessage,
-                                paginationId,
-                                filters,
-                                headers,
-                                rowBuilder
-                            );
-                        }
-                    });
-
+    
                     // Attach click event handler for modalData buttons
                     $(document).on("click", ".modalData", handleModalDataClick);
-
                 }
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
-            },
+                hideLoader(); // Hide loader in case of error
+            }
         });
     }
-
-    function displayModal(detailData) {
-        const statusValue = parseInt(detailData.status, 10);
-        const statusText = statusValue === 1 ? "Pending" : "Disposed";
-        const modalTitle = "Case Details";
-
-        let modalBody = `
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Basic Information</h5>
-                        <p><strong>Reg No:</strong> ${
-                            detailData.registration_no
-                        }</p>
-                        <p><strong>Year:</strong> ${detailData.year}</p>
-                        <p><strong>Diary No:</strong> ${
-                            detailData.diaryno
-                        }</p>
-                        <p><strong>DOR:</strong> ${detailData.dor}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Advocates</h5>
-                        <p><strong>Petitioner Advocate:</strong> ${
-                            detailData.padvocate
-                        }</p>
-                        <p><strong>Respondent Advocate:</strong> ${
-                            detailData.radvocate
-                        }</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <p><strong>Subject:</strong> ${detailData.location}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Case Information</h5>
-                        <p><strong>Petitioner:</strong> ${
-                            detailData.applicant
-                        }</p>
-                        <p><strong>Respondent:</strong> ${
-                            detailData.respondent
-                        }</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>PDF Documents</h5>
-                        ${detailData.interim_judgements
-                            .map((judgement) => {
-                                let case_type = detailData.registration_no ? detailData.registration_no.slice(0, 2) : ''; // Extract first 2 characters of registration_no
-
-                                var year = detailData.dor.split("-")[2];
-
-                                var baseUrl =
-                                    "https://aftdelhi.nic.in/assets/pending_cases/" +
-                                    year +
-                                    "/" +
-                                    case_type +
-                                    "/";
-                                var pdfUrl =
-                                    baseUrl +
-                                    encodeURIComponent(
-                                        judgement.pdfname.trim()
-                                    );
-                                return `<button onclick="openPdf('${pdfUrl}')" class="btn btn-sm btn-success mb-2">View Order Dated: (${judgement.dol})</button>`;
-                            })
-                            .join("")}
-                        <p><strong>Status:</strong> ${statusText}</p>
-                        <p><strong>Remarks:</strong> ${detailData.reopened}</p>
-                    </div>
-                </div>
-            </div>`;
-        const pdfUrl = generatePdfRoute.replace(":id", detailData.id);
-        const modalFooter = `
-            <button id="printButton" class="btn btn-primary">Print</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        `;
-
-        $(".modal-body").html(modalBody);
-        $(".modal-footer").html(modalFooter);
-        $("#myModalLabel").text(modalTitle);
-        $("#myModal").modal("show");
-
-        $("#printButton").click(printModalContent);
-    }
-
-    function handlePdfButtonClick() {
-        const id = $(this).data("id");
-        var url = `/pdf/?id=${filters.casedate}`;
-    }
-
-    // Bind the PDF button click event handler
-    $(document).on("click", "#pdfButton", handlePdfButtonClick);
-
-    function printModalContent() {
-        const modalContent = document.querySelector(
-            "#myModal .modal-body"
-        ).innerHTML;
-        const modalTitle = $("#myModalLabel").text();
-        const printWindow = window.open("", "_blank");
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Print</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                    }
-                    .container {
-                        margin: 0 auto;
-                        width: 80%;
-                    }
-                    .row {
-                        display: flex;
-                        flex-wrap: wrap;
-                        margin-bottom: 20px;
-                    }
-                    .col-md-6 {
-                        flex: 0 0 50%;
-                        max-width: 50%;
-                    }
-                    .col-md-12 {
-                        flex: 0 0 100%;
-                        max-width: 100%;
-                    }
-                    h5 {
-                        font-size: 18px;
-                        margin-bottom: 10px;
-                    }
-                    p {
-                        margin: 5px 0;
-                    }
-                    .btn {
-                        display: none;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>${modalTitle}</h1>
-                <div class="container">
-                    ${modalContent}
-                </div>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
+    
 
     function handleModalDataClick() {
         var id = $(this).data("id");
@@ -325,383 +148,166 @@ $(document).ready(function () {
         });
     }
 
-    function getFilters() {
-        return {
-            fileno: $("#fileno").val(),
-            // year: $("#year").val(),
-            partyname: $("#partyname").val(),
-            advocate: $("#advocate").val(),
-            casetype: $("#casetype").val(),
-            casedate: $("#casedate").val(),
-            searchdate: $("#searchdate").val(),
-        };
-    }
+    // Modal display function
+    function displayModal(detailData) {
+        const statusText = detailData.status == 1 ? "Pending" : "Disposed";
+        const modalTitle = "Case Details";
 
-    $("#filterButtonFileNumber").click(function () {
-        var filters = {};
-        filters.fileno = $("#fileno").val();
-        //  filters.year = $("#year").val();
-        var url = baseUrl + "?fileno=" + filters.fileno;
-        // var url = `/cases/search/all?fileno=${filters.fileno}&year=${filters.year}`;
-        var headers = ["S No", "Reg No", "Year", "Petitioner", "Action"];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.registration_no}</td>
-                <td class="year-cell">${item.year}</td>
-                <td class="petitioner-cell">${truncateText(
-                    item.applicant,
-                    30
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View Details</button>
-            `;
-        };
-        fetchJudgements(
-            url,
-            "dataTableFileNumber",
-            "No data available for given search.",
-            "paginationLinksFileNumber",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
+        let modalBody = `
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <p><strong>Reg No:</strong> ${detailData.registration_no}</p>
+                        <p><strong>Year:</strong> ${detailData.year}</p>
+                        <p><strong>Diary No:</strong> ${detailData.diaryno}</p>
+                        <p><strong>DOR:</strong> ${detailData.dor}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Advocates</h5>
+                        <p><strong>Petitioner Advocate:</strong> ${detailData.padvocate}</p>
+                        <p><strong>Respondent Advocate:</strong> ${detailData.radvocate}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Case Information</h5>
+                        <p><strong>Petitioner:</strong> ${detailData.applicant}</p>
+                        <p><strong>Respondent:</strong> ${detailData.respondent}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>PDF Documents</h5>
+                        ${detailData.interim_judgements
+                            .map((judgement) => {
+                                let case_type = detailData.registration_no ? detailData.registration_no.slice(0, 2) : ""; 
+                                var year = detailData.dor.split("-")[2];
+                                var baseUrl = "https://aftdelhi.nic.in/assets/pending_cases/" + year + "/" + case_type + "/";
+                                var pdfUrl = baseUrl + encodeURIComponent(judgement.pdfname.trim());
+                                return `<button onclick="openPdf('${pdfUrl}')" class="btn btn-sm btn-success mb-2">View Order Dated: (${judgement.dol})</button>`;
+                            }).join("")}
+                        <p><strong>Status:</strong> ${statusText}</p>
+                        <p><strong>Remarks:</strong> ${detailData.reopened}</p>
+                    </div>
+                </div>
+            </div>`;
 
-    $("#filterButtonPartyName").click(function () {
-        var filters = {};
-        filters.partyname = $("#partyname").val();
-        var url = baseUrl + "?partyname=" + filters.partyname;
-        //  var url = `/cases/search/all?partyname=${filters.partyname}`;
-        var headers = ["S No", "Reg No", "Applicant", "Action"];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.registration_no}</td>
-                <td class="applicant-cell">${truncateText(
-                    item.applicant,
-                    30
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button>
-                   </td>`;
-        };
-        fetchJudgements(
-            url,
-            "dataTablePartyName",
-            "No data available for given search.",
-            "paginationLinksPartyName",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
+        const modalFooter = `<button id="printButton" class="btn btn-primary">Print</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`;
 
-    $("#filterButtonAdvocate").click(function () {
-        var filters = {};
-        filters.advocate = $("#advocate").val();
-        var url = baseUrl + "?advocate=" + filters.advocate;
-        //var url = `/cases/search/all?advocate=${filters.advocate}`;
-        var headers = [
-            "S No",
-            "Reg No",
-            "Petitioner Advocate",
-            "Respondent Advocate",
-            "Action",
-        ];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.registration_no}</td>
-                <td class="petitioner-advocate-cell">${truncateText(
-                    item.padvocate,
-                    30
-                )}</td>
-                <td class="respondent-advocate-cell">${truncateText(
-                    item.radvocate,
-                    30
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button>
-                </td>`;
-        };
-        fetchJudgements(
-            url,
-            "dataTableAdvocate",
-            "No data available for given search.",
-            "paginationLinksAdvocate",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
+        $(".modal-body").html(modalBody);
+        $(".modal-footer").html(modalFooter);
+        $("#myModalLabel").text(modalTitle);
+        $("#myModal").modal("show");
 
-    $("#filterButtonCaseType").click(function () {
-        var filters = {};
-        filters.casetype = $("#casetype").val();
-        var url = baseUrl + "?casetype=" + filters.casetype;
-        //var url = `/cases/search/all?casetype=${filters.casetype}`;
-        var headers = ["S No", "Reg No", "Case Type", "Petitioner", "Action"];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.registration_no}</td>
-                <td class="case-type-cell">${getCaseType(item.case_type)}</td>
-                <td class="petitioner-cell">${truncateText(
-                    item.applicant,
-                    30
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button>
-                </td>`;
-        };
-        fetchJudgements(
-            url,
-            "dataTableCaseType",
-            "No data available for given search.",
-            "paginationLinksCaseType",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
-
-    $("#filterButtonDate").click(function () {
-        var filters = {};
-        filters.casedate = $("#casedate").val();
-
-        function formatInputDate(dateString) {
-            if (typeof dateString !== "string") {
-                return dateString;
-            }
-            var date = dateString.split("-");
-            return date[2] + "-" + date[1] + "-" + date[0];
-        }
-
-        filters.casedate = formatInputDate(filters.casedate);
-        var url = baseUrl + "?casedate=" + filters.casedate;
-        //   var url = `/cases/search/all?casedate=${filters.casedate}`;
-        var headers = ["S No", "Reg No", "Next Date", "Petitioner", "Action"];
-        var rowBuilder = function (item) {
-            return `
-                <td class="regno-cell">${item.registration_no}</td>
-                <td class="case-type-cell">${item.dol}</td>
-                <td class="petitioner-cell">${truncateText(
-                    item.applicant,
-                    30
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button>
-                </td>`;
-        };
-        fetchJudgements(
-            url,
-            "dataTableDate",
-            "No data available for given search.",
-            "paginationLinksDate",
-            filters,
-            headers,
-            rowBuilder
-        );
-    });
-
-    $("#filterButtonByDate").click(function () {
-        var filters = {};
-        filters.searchdate = $("#searchdate").val(); // Capture the search date
-    
-        // Ensure the date format is correct
-        function formatInputDate(dateString) {
-            if (typeof dateString !== "string") {
-                return dateString;
-            }
-            var date = dateString.split("-");
-            return date[2] + "-" + date[1] + "-" + date[0]; // Format to d-m-Y
-        }
-    
-        filters.searchdate = formatInputDate(filters.searchdate); // Format the input date
-    
-        var url = baseUrl + "?searchdate=" + filters.searchdate; // Build the query URL
-    
-        console.log("Fetching data from URL:", url); // Debugging: Log the generated URL
-    
-        var headers = ["S No", "Reg No", "Order Date", "Petitioner",  "View", "PDF"];
-        var rowBuilder = function (item, index) {
-            // Safely check if interimJudgements exists and has data for each case
-            let interimJudgements = item.interim_judgements || []; // Fallback to an empty array if undefined
-            
-            // Check if there's at least one interim judgement and extract dol from interim_judgements
-            let dol = interimJudgements.length > 0 ? interimJudgements[0].dol : '';
-            let year =item.registration_no ? item.registration_no.slice(-4) : ''; // Extract last 4 characters of registration_no
-
-            // Check if there's at least one interim judgement and get pdfname
-            let pdfFilename = interimJudgements.length > 0 ? interimJudgements[0].pdfname : 'No PDF Available';
-    
-            // Construct the URL for the PDF (assuming the structure is similar to what you have)
-            let caseType = item.registration_no ? item.registration_no.slice(0, 2) : ''; // Extract first 2 characters of registration_no
-
-            let baseUrl = "https://aftdelhi.nic.in/assets/pending_cases/" + year + "/" + caseType + "/";
-            let pdfUrl = interimJudgements.length > 0 ? baseUrl + encodeURIComponent(interimJudgements[0].pdfname.trim()) : '#';
-    
-            // Return the row HTML with case information and interim judgement details
-            return `
-                <tr>
-                    <td class="regno-cell">${index + 1}</td>
-                    <td class="regno-cell">${item.registration_no || ''}</td>
-                    <td class="order-date-cell">${dol}</td> <!-- Use dol from interim_judgements -->
-                    <td class="petitioner-cell">${truncateText(item.applicant || '', 30)}</td>
-                    <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="openPdf('${pdfUrl}')">
-                            ${pdfFilename !== 'No PDF Available' ? 'Order' : 'NA'}
-                        </button>
-                    </td>
-                </tr>
-            `;
-        };
-    
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                var cases = data.data || []; // CaseRegistration records
-    
-                // Clear the table before appending new data
-                $("#dataTableByDate tbody").empty();
-    
-                // Check if we have any cases to display
-                if (cases.length > 0) {
-                    cases.forEach((item, index) => {
-                        $("#dataTableByDate tbody").append(rowBuilder(item, index));
-                    });
-                } else {
-                    // If no cases found, display a message
-                    $("#dataTableByDate tbody").append('<tr><td colspan="6">No data available for the given search.</td></tr>');
-                }
-    
-                // Handle pagination if the data contains pagination information
-                if (data.pagination) {
-                    setupPagination(data.pagination, "paginationLinksByDate");
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    });
-    
-    
-    
-    
-    function fetchJudgements(
-        baseUrl,
-        tableId,
-        noDataMessage,
-        paginationId,
-        filters,
-        headers,
-        rowBuilder
-    ) {
-        var url = new URL(baseUrl, window.location.origin);
-        Object.keys(filters).forEach((key) => {
-            if (filters[key]) {
-                url.searchParams.set(key, filters[key]); // Append filter parameters to the URL
-            }
-        });
-    
-        console.log("Final Request URL:", url.href); // Debugging: Log the final URL
-    
-        $.ajax({
-            url: url.href,
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                console.log("Response received:", response); // Debugging: Log the response
-    
-                $(`#${tableId} tbody`).empty();
-                $(`#${tableId} thead`).empty();
-                $(`#${tableId} tfoot`).empty();
-    
-                // Remove any existing record count display
-                $(".record-count").remove();
-    
-                if (response.data.length === 0) {
-                    var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
-                    $(`#${tableId} tbody`).append(noDataRow);
-                } else {
-                    var head = '<tr class="text-center">';
-                    headers.forEach((header) => {
-                        head += `<th class="header-cell">${header}</th>`;
-                    });
-                    head += "</tr>";
-                    $(`#${tableId} thead`).append(head);
-    
-                    $.each(response.data, function (index, item) {
-                        var row = "<tr>";
-                        row += `<td class="index-cell">${
-                            response.from + index
-                        }</td>`;
-                        row += rowBuilder(item);
-                        row += "</tr>";
-                        $(`#${tableId} tbody`).append(row);
-                    });
-    
-                    // Display the count of filtered records
-                    var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
-                    $(`#${paginationId}`).before(recordCount);
-    
-                    // Generate and display pagination links
-                    var paginationLinks = "";
-                    $.each(response.links, function (index, link) {
-                        if (link.url === null) {
-                            paginationLinks +=
-                                '<li class="page-item disabled"><span class="page-link">' +
-                                link.label +
-                                "</span></li>";
-                        } else {
-                            var filteredUrl = new URL(
-                                link.url,
-                                window.location.origin
-                            );
-                            Object.keys(filters).forEach((key) => {
-                                if (filters[key]) {
-                                    filteredUrl.searchParams.set(
-                                        key,
-                                        filters[key]
-                                    );
-                                }
-                            });
-                            paginationLinks +=
-                                '<li class="page-item' +
-                                (link.active ? " active" : "") +
-                                '"><a class="page-link" href="' +
-                                filteredUrl.href +
-                                '">' +
-                                link.label +
-                                "</a></li>";
-                        }
-                    });
-                    $(`#${paginationId}`).html(paginationLinks);
-    
-                    $(".page-link").click(function (event) {
-                        event.preventDefault();
-                        if ($(this).attr("href") !== undefined) {
-                            fetchJudgements(
-                                $(this).attr("href"),
-                                tableId,
-                                noDataMessage,
-                                paginationId,
-                                filters,
-                                headers,
-                                rowBuilder
-                            );
-                        }
-                    });
-                    $(document).on("click", ".modalData", handleModalDataClick);
-
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error occurred:", xhr.responseText); // Log error message
-            },
-        });
+        $("#printButton").click(printModalContent);
     }
     
-    // $("#pdfButton").click(handleModalDataPDFClick);
+   // Filter by File Number
+$("#filterButtonFileNumber").click(function () {
+    var filters = { fileno: $("#fileno").val() };
+    var url = baseUrl + "?fileno=" + filters.fileno;
+    var headers = ["S No", "Reg No", "Year", "Petitioner", "Action"];
+    var rowBuilder = function (item) {
+        return `
+            <td class="regno-cell">${item.registration_no}</td>
+            <td class="year-cell">${item.year}</td>
+            <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+            <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View Details</button></td>
+        `;
+    };
+    fetchJudgements(url, "dataTableFileNumber", "No data available for given search.", filters, headers, rowBuilder);
+});
+$("#filterButtonPartyName").click(function () {
+    var filters = { partyname: $("#partyname").val() };
+    var url = baseUrl + "?partyname=" + filters.partyname;
+    var headers = ["S No", "Reg No", "Year", "Petitioner", "Action"];
+    var rowBuilder = function (item) {
+        return `
+            <td class="regno-cell">${item.registration_no}</td>
+            <td class="petitioner-cell">${item.year}</td>
+            <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+
+            <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View Details</button></td>
+        `;
+    };
+    fetchJudgements(url, "dataTablePartyName", "No data available for given search.", filters, headers, rowBuilder);
+});
+
+
+
+// Filter by Advocate
+$("#filterButtonAdvocate").click(function () {
+    var filters = { advocate: $("#advocate").val() };
+    var url = baseUrl + "?advocate=" + filters.advocate;
+    var headers = ["S No", "Reg No", "Petitioner Advocate", "Respondent Advocate", "Action"];
+    var rowBuilder = function (item) {
+        return `
+            <td class="regno-cell">${item.registration_no}</td>
+            <td class="petitioner-advocate-cell">${truncateText(item.padvocate, 30)}</td>
+            <td class="respondent-advocate-cell">${truncateText(item.radvocate, 30)}</td>
+            <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>`;
+    };
+    fetchJudgements(url, "dataTableAdvocate", "No data available for given search.", filters, headers, rowBuilder);
+});
+
+// Filter by Case Type
+$("#filterButtonCaseType").click(function () {
+    var filters = { casetype: $("#casetype").val() };
+    var url = baseUrl + "?casetype=" + filters.casetype;
+    var headers = ["S No", "Reg No", "Case Type", "Petitioner", "Action"];
+    var rowBuilder = function (item) {
+        return `
+            <td class="regno-cell">${item.registration_no}</td>
+            <td class="case-type-cell">${item.registration_no.substring(0,2)}</td>
+            <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+            <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>`;
+    };
+    fetchJudgements(url, "dataTableCaseType", "No data available for given search.", filters, headers, rowBuilder);
+});
+
+// Filter by Date
+$("#filterButtonDate").click(function () {
+    var filters = { casedate: $("#casedate").val() };
+    var url = baseUrl + "?casedate=" + filters.casedate;
+    var headers = ["S No", "Reg No", "Next Date", "Petitioner", "Action"];
+    var rowBuilder = function (item) {
+        return `
+            <td class="regno-cell">${item.registration_no}</td>
+            <td class="case-type-cell">${item.dol}</td>
+            <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+            <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>`;
+    };
+    fetchJudgements(url, "dataTableDate", "No data available for given search.", filters, headers, rowBuilder);
+});
+
+ // Filter by Search Date (DOL)
+ $("#filterButtonByDate").click(function () {
+    var filters = { searchdate: $("#searchdate").val() };
+    var url = baseUrl + "?searchdate=" + filters.searchdate;
+    var headers = ["S No", "Reg No", "Date Order", "Petitioner", "Action"];
+    
+    var rowBuilder = function (item) {
+        // Assuming item.interim_judgements is an array of judgements, we will use the first interim judgement for displaying purposes
+        var interimJudgement = item.interim_judgements.length > 0 ? item.interim_judgements[0] : null;
+
+        // If interimJudgement is available, display the details
+        if (interimJudgement) {
+            return `
+                <td class="regno-cell">${item.registration_no}</td>
+                <td class="case-type-cell">${interimJudgement.dol}</td> <!-- Display dol from interim_judgements -->
+                <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+                <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>`;
+        } else {
+            return `
+                <td class="regno-cell">${item.registration_no}</td>
+                <td class="case-type-cell">N/A</td> <!-- No interim judgement available -->
+                <td class="petitioner-cell">${truncateText(item.applicant, 30)}</td>
+                <td><button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button></td>`;
+        }
+    };
+    
+    fetchJudgements(url, "dataTableByDate", "No data available for given search.", filters, headers, rowBuilder);
+});
+
+
 });

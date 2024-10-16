@@ -31,7 +31,114 @@
   .radvocate-cell {
     font-size: 18px;
   }
+
+  .loader {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #3498db;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .light-mode {
+      background-color: #fff;
+      color: #000;
+  }
+
+  .dark-mode {
+      background-color: #2c2c2c;
+      color: #ffffff;
+  }
+
+  /* Button styling for dark mode */
+  .dark-mode .btn {
+      background-color: #444;
+      color: #fff;
+  }
+
+  /* Table header styling for dark mode */
+  .dark-mode th {
+      background-color: #333;
+      color: #fff;
+  }
+
+  /* Table body cell styling for dark mode */
+  .dark-mode td {
+      color: #fff;
+  }
+    /* Custom light warning color */
+    .bg-light-warning {
+        background-color: #fff3cd; /* Lighter shade of Bootstrap warning color */
+        color: #856404; /* Text color that contrasts with the background */
+    }
+
+     /* Custom styling for modal messages */
+     .modal-message {
+        font-family: 'Arial', sans-serif; /* You can change this to any other font */
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50; /* Beautiful dark color for the text */
+    }
+
+    /* Styling for heading inside the modal */
+    .modal-heading {
+        font-family: 'Georgia', serif; /* A more elegant font for headings */
+        font-size: 20px;
+        font-weight: bold;
+        color: #34495e; /* Darker color for headings */
+    }
+
+    /* Table styling for better readability */
+    .modal-table {
+        font-family: 'Verdana', sans-serif;
+        font-size: 16px;
+        color: #2c3e50;
+    }
+
+    /* Bold and beautiful message text */
+    .important-message {
+        font-weight: bold;
+        color: #e74c3c; /* Highlight important messages in a reddish tone */
+        font-size: 18px;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    /* Light background for better contrast */
+    .modal-body {
+        background-color: #f7f9fc; /* Light background color */
+    }
+
+    /* Button style */
+    .btn-primary {
+        background-color: #3498db;
+        border: none;
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        padding: 10px 20px;
+    }
 </style>
+
+<!-- Loader (hidden by default) -->
+<div id="loader" class="loader" style="display:none;"></div>
 
 <div class="reservation-widget-area pt-60 pb-70">
   <div class="container ml-5">
@@ -143,13 +250,8 @@
                   <h2>Diary - {{ $searchBy }}</h2>
                   <hr>
                   <table id="dataTable{{ str_replace(' ', '', $searchBy) }}" class="table bg-secondary text-white">
-                    <thead></thead>
+                    <!-- Thead will be dynamically generated here -->
                     <tbody></tbody>
-                    <tfoot>
-                      <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="paginationLinks{{ str_replace(' ', '', $searchBy) }}"></ul>
-                      </nav>
-                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -168,13 +270,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>Modal body content goes here.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -185,22 +287,23 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="myModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>Modal body content goes here.</p>
       </div>
       <div class="modal-footer" id="modal_footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-        var baseUrl = "{{ route('diary.search') }}";
-        var showUrl = "{{ route('diary.show') }}";
+    var baseUrl = "{{ route('diary.search') }}";
+    var showUrl = "{{ route('diary.show') }}";
 </script>
 <script src="{{ asset('frontend/assets/js/diary_search.js') }}"></script>
+
 @endsection

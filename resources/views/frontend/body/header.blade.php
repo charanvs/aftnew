@@ -1,23 +1,29 @@
 <style>
     /* Breadcrumb Section */
     .breadcrumb-section {
-      width: 90%;
+      width: 100%; /* Full width */
+      max-width: 1200px; /* Optional max-width to prevent it from being too wide on larger screens */
       margin: 0 auto;
-      padding: 10px 0;
+      padding: 5px 0; /* Reduced padding to make breadcrumb height less */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .inner-title {
       background: rgba(0, 0, 0, 0.7); /* Darker background for better contrast */
-      padding: 15px 25px;
+      padding: 10px 20px; /* Reduced padding */
       border-radius: 10px;
       color: #fff;
       text-align: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+      width: 100%; /* Make inner-title take full width */
     }
 
     .inner-title h3 {
-      font-size: 28px;
-      margin: 10px 0;
+      font-size: 28px; /* Slightly reduced font size */
+      margin: 5px 0; /* Reduced margin */
       color: #ffd700;
       font-weight: 700; /* Increased font weight */
       text-transform: uppercase;
@@ -28,21 +34,37 @@
 
     .breadcrumb {
       padding: 0;
-      margin: 0 0 10px;
+      margin: 5px 0; /* Reduced margin */
       list-style: none;
       display: flex;
+      flex-wrap: wrap; /* Make breadcrumb items wrap on smaller screens */
       justify-content: center;
       align-items: center;
       color: #fff;
+      width: 100%; /* Ensure breadcrumb spans full width */
+    }
+
+    .breadcrumb h5 {
+      font-size: 22px; /* Slightly reduced font size */
+      color: #0000ff;
+      font-weight: bold;
+      margin-bottom: 5px; /* Reduced spacing between header and list items */
+    }
+
+    .inner-title h5 {
+      font-size: 22px; /* Slightly reduced font size */
+      color: whitesmoke;
+      font-weight: bold;
+      margin-bottom: 5px; /* Reduced spacing */
     }
 
     .breadcrumb li {
-      font-size: 16px; /* Increased font size */
-      margin-right: 10px;
+      font-size: 16px; /* Reduced font size */
+      margin-right: 5px; /* Reduced margin between breadcrumb items */
     }
 
     .breadcrumb li+li:before {
-      padding: 0 8px;
+      padding: 0 5px; /* Reduced padding between breadcrumb separators */
       color: #fff;
       content: "/\00a0";
     }
@@ -50,8 +72,8 @@
     .breadcrumb li a {
       color: #ffd700;
       text-decoration: none;
-      font-weight: 600; /* Increased font weight */
-      transition: color 0.3s ease; /* Smooth transition for color change */
+      font-weight: 600;
+      transition: color 0.3s ease;
     }
 
     .breadcrumb li a:hover {
@@ -64,13 +86,14 @@
       text-align: right;
     }
 
-    /* Sticky Navbar */
+    /* Navbar Section */
     .navbar-area {
       position: sticky;
       top: 0;
       z-index: 1000;
       background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+      padding: 5px 0; /* Reduced padding for navbar */
     }
 
     /* Navbar Styling */
@@ -82,16 +105,16 @@
 
     .navbar-nav .nav-link {
       white-space: normal;
-      padding: 10px 20px;
-      font-weight: 600; /* Increased font weight */
-      font-size: 16px;
+      padding: 8px 15px; /* Reduced padding for navbar items */
+      font-weight: 600;
+      font-size: 14px; /* Reduced font size */
       color: #333;
-      transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+      transition: color 0.3s ease, background-color 0.3s ease;
     }
 
     .navbar-nav .nav-link:hover {
       color: #007bff;
-      background-color: rgba(0, 123, 255, 0.1); /* Subtle background color on hover */
+      background-color: rgba(0, 123, 255, 0.1); 
     }
 
     .navbar-nav .dropdown-menu {
@@ -100,7 +123,7 @@
 
     .navbar-nav .dropdown-menu .nav-link {
       color: #333;
-      font-size: 15px;
+      font-size: 14px; /* Reduced font size */
     }
 
     .navbar-nav .dropdown-menu .nav-link:hover {
@@ -112,21 +135,6 @@
       left: auto;
     }
 
-    @media (max-width: 767px) {
-      .navbar-nav .nav-link {
-        font-size: 14px;
-      }
-      .navbar-nav .more-dropdown {
-        display: none;
-      }
-    }
-
-    /* Ensure the content section is placed below the header */
-    .content-section {
-      padding-top: 20px;
-    }
-
-    /* Responsive Adjustments */
     @media (max-width: 576px) {
       .inner-title h3 {
         font-size: 24px;
@@ -137,9 +145,14 @@
       }
 
       .navbar-nav .nav-link {
-        font-size: 14px;
-        padding: 8px 10px;
+        font-size: 12px; /* Further reduced for small screens */
+        padding: 5px 10px; /* Reduced padding */
       }
+    }
+
+    /* Ensure the content section is placed below the header */
+    .content-section {
+      padding-top: 20px;
     }
 
     html {
@@ -147,30 +160,28 @@
     }
 </style>
 
+
 <!-- Breadcrumb Section -->
 <div class="breadcrumb-section">
-    <div class="inner-title d-flex justify-content-between align-items-center">
-        <div>
-            <ul class="breadcrumb mb-0">
-                <li><a href="{{ url('/') }}">Home</a></li>
-                <li id="main-menu-value">AFT PB</li>
-                <li id="selected-menu-value"></li>
-            </ul>
-            <h5>AFT PB <a href="https://aftdelhi.nic.in/ourphp/courtdisplay/courtdisplay.php">Court Display Board</a></h5>
-            
-        </div>
+    <div class="inner-title">
+        <h3>Armed Forces Tribunal (Principal Bench)</h3>
+        <a href="https://aftdelhi.nic.in/ourphp/courtdisplay/courtdisplay.php" target="_blank"><h5>Court Display Board</h5></a>
+        
+        <ul class="breadcrumb mb-0">
+            {{-- <li id="main-menu-value">AFT PB</li>
+            <li id="selected-menu-value"></li> --}}
+        </ul>
         <!-- Translator moved inside the breadcrumb section -->
         <div id="google_translate_element"></div>
     </div>
 </div>
+
 
 <!-- Start Navbar Area -->
 <div class="navbar-area">
     <!-- Menu For Mobile Device -->
     <div class="mobile-nav">
         <a href="{{ route('home') }}" class="logo">
-            <img src="{{ asset('frontend/assets/img/inner-banner/logo.png') }}" class="logo-one" alt="Logo">
-            <img src="{{ asset('frontend/assets/img/inner-banner/logo.png') }}" class="logo-two" alt="Logo">
         </a>
     </div>
 
@@ -178,15 +189,14 @@
     <div class="main-nav">
         <div class="container mean-container">
             <nav class="navbar navbar-expand-md navbar-danger">
-                <a class="navbar-brand" href="{{ route('home') }}">
-                    <img src="{{ asset('frontend/assets/img/inner-banner/logo.png') }}" class="logo-two" alt="Logo">
+                <a class="navbar-brand" href="{{ url('/') }}">
                 </a>
 
                 <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto custom-nav">
                       
                         <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link {{ areActiveRoutes(['home', 'members.page', 'organization.chart']) }}" data-text="Home">
+                            <a href="{{ url('/') }}" class="nav-link {{ areActiveRoutes(['home', 'members.page', 'organization.chart']) }}" data-text="Home">
                                 Home
                             </a>
                             <ul class="dropdown-menu">
@@ -203,12 +213,12 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link {{ areActiveRoutes(['daily_cause_list.page', 'cases.page']) }}" data-text="Case Management">
+                            <a href="#" class="nav-link {{ areActiveRoutes(['new.calendar', 'cases.page', 'diary.page']) }}" data-text="Case Management">
                                 Case Management
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="{{ route('daily_cause_list.page') }}" class="nav-link" data-text="Daily Cause List">
+                                    <a href="{{ route('new.calendar') }}" class="nav-link" data-text="Daily Cause List">
                                         Daily Cause List
                                     </a>
                                 </li>
@@ -217,11 +227,12 @@
                                         Search Orders
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                                                <li class="nav-item">
                                     <a href="{{ route('diary.page') }}" class="nav-link" data-text="Search Orders">
                                         Diary Search
                                     </a>
                                 </li>
+
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -249,6 +260,7 @@
                                         Review Cases Of Regional Branches
                                     </a>
                                 </li>
+        
                             </ul>
                         </li>
                         <li class="nav-item">

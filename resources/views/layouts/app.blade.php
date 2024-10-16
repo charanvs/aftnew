@@ -35,7 +35,7 @@
   <!-- Responsive CSS -->
   <link rel="stylesheet" href="{{ asset('frontend/assets/css/responsive.css') }}">
   <!-- Theme Dark CSS -->
-  <link rel="stylesheet" href="{{ asset('frontend/assets/css/theme-dark.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('frontend/assets/css/theme-dark.css') }}"> --}}
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">

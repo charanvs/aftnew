@@ -6,7 +6,6 @@
 
 <link rel="stylesheet" href="{{ asset('frontend/assets/css/home.css') }}" type="text/css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
   .btn-spacing {
@@ -36,27 +35,6 @@
     font-size: 18px;
   }
 
-  /* Custom CSS for pagination responsiveness */
-  @media (max-width: 576px) {
-    .pagination {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .pagination li {
-      flex: 1 1 auto;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .pagination li a, .pagination li span {
-      display: block;
-      width: 100%;
-      text-align: center;
-    }
-  }
-
   /* Print Styles */
   @media print {
     body * {
@@ -76,14 +54,71 @@
       margin-bottom: 20px;
     }
   }
+
+  /* Loader Styles */
+  #loader {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+
+  .loader-icon {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Responsive Table Styling */
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table th, .table td {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+
+  /* Beautify Table */
+  .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+  }
+
+  .table thead th {
+    background-color: #343a40;
+    color: white;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #d3d3d3;
+  }
 </style>
 
+<!-- Loader -->
+<div id="loader" class="loader-icon"></div>
+
+<!-- Case Management Area -->
 <div class="reservation-widget-area pt-60 pb-70">
-  <div class="container ml-5">
-    <div class="tab reservation-tab ml-5">
+  <div class="container">
+    <div class="tab reservation-tab">
       <ul class="tabs">
         @foreach (['File Number', 'Party Name', 'Advocate Name', 'Case Type', 'Date', 'By Date'] as $index => $tab)
-          <li class="bg-secondary  m-1">
+          <li class="bg-secondary m-1">
             <a href="#" class="default-btn btn-bg-four border-radius-5 btn-spacing tab-link" data-tab-index="{{ $index }}">
               <span class="text-white h6">{{ $tab }}</span>
             </a>
@@ -96,69 +131,44 @@
           <div class="tabs_item {{ $key === 0 ? 'current' : '' }}" data-tab-index="{{ $key }}">
             <div class="reservation-tab-item printableArea">
               <div class="row">
-                <div class="col-lg-{{ $searchBy === 'Advocate' ? '3' : '4' }}">
+                <div class="col-lg-4">
                   <div class="side-bar-form">
                     <h3>Search By - {{ $searchBy }}</h3>
-                    <form method="get"
-                      action="{{ in_array($searchBy, ['File Number', 'Date', 'By Date']) ? route('judgements.page') : '#' }}">
+                    <form method="get" action="#">
                       <div class="row align-items-center">
                         <div class="col-lg-12">
                           <div class="form-group">
-                            <label>
-                              <h5>Select Bench</h5>
-                            </label>
+                            <label><h5>Select Bench</h5></label>
                             <select class="form-control">
                               <option>Principal Bench</option>
                               <option>Chandigarh</option>
                               <option>Chennai</option>
-                              <option>Guwhati</option>
+                              <option>Guwahati</option>
                               <option>Kolkata</option>
                             </select>
                           </div>
                         </div>
+
+                        <!-- Dynamic Input Fields for Different Search Criteria -->
                         @if ($searchBy === 'File Number')
                           <div class="col-lg-12">
                             <div class="form-group">
                               <label class="h5">Registration No</label>
-                              <div class="input-group">
-                                <input type="text" class="form-control search-input" placeholder="Registration No" id="fileno">
-                                <span class="input-group-addon"></span>
-                              </div>
-                              <i class='bx bx-file-blank'></i>
+                              <input type="text" class="form-control search-input" id="fileno" placeholder="Registration No">
                             </div>
                           </div>
-                        @elseif ($searchBy === 'By Date')
+                        @elseif ($searchBy === 'By Date' || $searchBy === 'Date')
                           <div class="col-lg-12">
                             <div class="form-group">
-                              <label class="h5">Search By Date</label>
-                              <div class="input-group">
-                                <input type="date" class="form-control search-input" placeholder="Date" id="searchdate">
-                                <span class="input-group-addon"></span>
-                              </div>
-                            </div>
-                          </div>
-                        @elseif ($searchBy === 'Date')
-                          <div class="col-lg-12">
-                            <div class="form-group">
-                              <label class="h5">Next Date</label>
-                              <div class="input-group">
-                                <input type="date" class="form-control search-input" placeholder="Date" id="casedate">
-                                <span class="input-group-addon"></span>
-                              </div>
-                           
+                              <label class="h5">{{ $searchBy === 'By Date' ? 'Search By Date' : 'Next Date' }}</label>
+                              <input type="date" class="form-control search-input" id="{{ $searchBy === 'By Date' ? 'searchdate' : 'casedate' }}" placeholder="Date">
                             </div>
                           </div>
                         @elseif ($searchBy !== 'Case Type')
                           <div class="col-lg-12">
                             <div class="form-group">
                               <label class="h5">{{ $searchBy }}</label>
-                              <div class="input-group">
-                                <input type="text" class="form-control search-input" placeholder="{{ $searchBy }}"
-                                  id="{{ strtolower(str_replace(' ', '', $searchBy)) }}">
-                                <span class="input-group-addon"></span>
-                              </div>
-                              <i
-                                class='bx {{ $searchBy === 'File Number' ? 'bx-file-blank' : ($searchBy === 'Party Name' ? 'bx-rename' : ($searchBy === 'Advocate' ? 'bx-user-pin' : '')) }}'></i>
+                              <input type="text" class="form-control search-input" id="{{ strtolower(str_replace(' ', '', $searchBy)) }}" placeholder="{{ $searchBy }}">
                             </div>
                           </div>
                         @else
@@ -173,13 +183,12 @@
                                 <option value="7">MA</option>
                                 <option value="5">RA</option>
                               </select>
-                              <i class='bx bx-search-alt'></i>
                             </div>
                           </div>
                         @endif
-                        <div class="col-lg-12 col-md-12">
-                          <button id="filterButton{{ str_replace(' ', '', $searchBy) }}" type="button"
-                            class="default-btn btn-bg-three border-radius-5">
+
+                        <div class="col-lg-12">
+                          <button id="filterButton{{ str_replace(' ', '', $searchBy) }}" type="button" class="default-btn btn-bg-three border-radius-5">
                             Search {{ str_replace(' ', '', $searchBy) }}
                           </button>
                         </div>
@@ -188,23 +197,33 @@
                   </div>
                 </div>
 
-                <div class="col-lg-{{ $searchBy === 'Advocate' ? '9' : '8' }}">
+                <!-- Table Display -->
+                <div class="col-lg-8">
                   <div class="reservation-widget-content">
+                    <h5 class="print-header text-danger">Please refresh the page for another search from the same tab</h5>
+                  
                     <h2 class="print-header">Details of Cases - {{ $searchBy }}</h2>
                     <hr>
-                    <button id="printButton" class="btn btn-primary">Print</button>
-                    <table id="dataTable{{ str_replace(' ', '', $searchBy) }}" class="table bg-secondary text-white">
-                      <thead></thead>
-                      <tbody></tbody>
-                      <tfoot>
-                        <div class="d-flex justify-content-center">
-                          <nav aria-label="Page navigation example">
-                            <ul class="pagination" id="paginationLinks{{ str_replace(' ', '', $searchBy) }}"></ul>
-                          </nav>
-                        </div>
-                      </tfoot>
-                    </table>
 
+                    <!-- Table -->
+                    <div class="table-responsive">
+                      <table id="dataTable{{ str_replace(' ', '', $searchBy) }}" class="table table-striped table-hover table-bordered">
+                        <thead></thead>
+                        <tbody></tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="5">
+                              <div class="d-flex justify-content-center">
+                                <nav aria-label="Page navigation example">
+                                  <ul class="pagination" id="paginationLinks{{ str_replace(' ', '', $searchBy) }}"></ul>
+                                </nav>
+                              </div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                    <!-- End of Table -->
                   </div>
                 </div>
               </div>
@@ -216,20 +235,8 @@
   </div>
 </div>
 
-<!-- Help Section -->
-<div class="help-section mt-5">
-  <div class="container">
-    <h3>Help - Tab Navigation</h3>
-    <ul>
-      <li>Key 1 - Registration No Search</li>
-      <li>Key 2 - Party Name Search</li>
-      <li>Key 3 - Advocate Search</li>
-      <li>Key 4 - Case Type Search</li>
-      <li>Key 5 - Next Date Search</li>
-      <li>Key 6 - Subject Search</li>
-    </ul>
-  </div>
-</div>
+
+
 
 <!-- Modals -->
 <div class="modal fade" id="myModal" tabindex="-1" aria-hidden="true">
@@ -308,33 +315,6 @@
         e.preventDefault();
         $(this).closest('form').find('button[type="button"]').click();
       }
-    });
-
-    // Shortcut keys for tabs
-    $(document).keydown(function(e) {
-      switch (e.which) {
-        case 49: // Key 1
-          $('.tab-link[data-tab-index="0"]').click();
-          break;
-        case 50: // Key 2
-          $('.tab-link[data-tab-index="1"]').click();
-          break;
-        case 51: // Key 3
-          $('.tab-link[data-tab-index="2"]').click();
-          break;
-        case 52: // Key 4
-          $('.tab-link[data-tab-index="3"]').click();
-          break;
-        case 53: // Key 5
-          $('.tab-link[data-tab-index="4"]').click();
-          break;
-        case 54: // Key 6
-          $('.tab-link[data-tab-index="5"]').click();
-          break;
-        default:
-          return;
-      }
-      e.preventDefault();
     });
 
     // Tab switching functionality

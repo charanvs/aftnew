@@ -32,133 +32,200 @@ $(document).ready(function () {
         clearTableContents();
     });
 
-    function fetchJudgements(
-        baseUrl,
-        tableId,
-        noDataMessage,
-        paginationId,
-        filters,
-        headers,
-        rowBuilder
-    ) {
+    function fetchJudgements(baseUrl, tableId, noDataMessage, paginationId, filters, headers, rowBuilder) {
         var url = new URL(baseUrl, window.location.origin);
         Object.keys(filters).forEach((key) => {
             if (filters[key]) {
                 url.searchParams.set(key, filters[key]);
             }
         });
-
-        $.ajax({
-            url: url.href,
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                // Clear any previous table contents
-                $(`#${tableId} tbody`).empty();
-                $(`#${tableId} thead`).empty();
-                $(`#${tableId} tfoot`).empty();
-
-                // Remove any existing record count display
-                $(".record-count").remove();
-
-                if (response.data.length === 0) {
-                    var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
-                    $(`#${tableId} tbody`).append(noDataRow);
-                } else {
-                    // Generate table headers
-                    var head = '<tr class="text-center">';
-                    headers.forEach((header) => {
-                        head += `<th class="header-cell">${header}</th>`;
-                    });
-                    head += "</tr>";
-                    $(`#${tableId} thead`).append(head);
-
-                    // Append table rows with fetched data
-                    $.each(response.data, function (index, item) {
-                        var row = "<tr>";
-                        row += `<td class="index-cell">${response.from + index}</td>`;
-                        row += rowBuilder(item);
-                        row += "</tr>";
-                        $(`#${tableId} tbody`).append(row);
-                    });
-
-                    // Display the count of filtered records
-                    var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
-                    $(`#${paginationId}`).before(recordCount);
-
-                    // Initialize DataTable
-                    $(`#${tableId}`).DataTable({
-                        "paging": true, // Enable pagination
-                        "searching": true, // Enable search
-                        "ordering": true, // Enable sorting
-                        "info": true, // Show table info
-                        "destroy": true // Ensure reinitialization on every fetch
-                    });
-
-                    // Attach click event handler for modalData buttons
-                    $(".modalData").click(handleModalDataClick);
-                    $(".modalDataPDF").click(handleModalDataPDFClick);
+    
+        // Show the loader before the AJAX call
+        $("#loader").show();
+    
+        setTimeout(function () {
+            $.ajax({
+                url: url.href,
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    // Clear any previous table contents
+                    $(`#${tableId} tbody`).empty();
+                    $(`#${tableId} thead`).empty();
+                    $(`#${tableId} tfoot`).empty();
+    
+                    // Remove any existing record count display
+                    $(".record-count").remove();
+    
+                    if (response.data.length === 0) {
+                        var noDataRow = `<tr><td colspan="5" class="text-center text-primary fw-bold">${noDataMessage}</td></tr>`;
+                        $(`#${tableId} tbody`).append(noDataRow);
+                    } else {
+                        // Generate table headers
+                        var head = '<tr class="text-center">';
+                        headers.forEach((header) => {
+                            head += `<th class="header-cell">${header}</th>`;
+                        });
+                        head += "</tr>";
+                        $(`#${tableId} thead`).append(head);
+    
+                        // Append table rows with fetched data
+                        $.each(response.data, function (index, item) {
+                            var row = "<tr>";
+                            row += `<td class="index-cell">${response.from + index}</td>`;
+                            row += rowBuilder(item);
+                            row += "</tr>";
+                            $(`#${tableId} tbody`).append(row);
+                        });
+    
+                        // Display the count of filtered records
+                        var recordCount = `<p class="record-count">Showing ${response.from} to ${response.to} of ${response.total} records</p>`;
+                        $(`#${paginationId}`).before(recordCount);
+    
+                        // Initialize DataTable (ensure proper initialization)
+                        $(`#${tableId}`).DataTable({
+                            paging: true,   // Enable pagination
+                            searching: true, // Enable search
+                            ordering: true,  // Enable sorting
+                            info: true,      // Show table info
+                            destroy: true,   // Ensure reinitialization on every fetch
+                            order: [],       // Disable initial sorting
+                            columnDefs: [
+                                { targets: 'no-sort', orderable: false } // Disable sorting for certain columns if needed
+                            ]
+                        });
+    
+                        // Attach click event handler for modalData buttons
+                        $(document).on("click", ".modalData", handleModalDataClick);
+                        $(".modalDataPDF").click(handleModalDataPDFClick);
+                    }
+    
+                    // Hide the loader after the AJAX call is done
+                    $("#loader").hide();
+                },
+                error: function (xhr, status, error) {
+                    // Hide the loader in case of an error
+                    $("#loader").hide();
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            },
-        });
+            });
+        }, 100);  // Delay to ensure the loader displays
     }
+    
+    
 
     function handleModalDataClick() {
         var id = $(this).data("id");
-
+    
         // Perform AJAX request to fetch data for the specific ID
         $.ajax({
             url: showUrl + "?id=" + id,
             type: "GET",
             dataType: "json",
             success: function (detailData) {
-                var modalTitle = "Case Details"; // Set modal title
-                var modalBody = '<div class="container theme-dark-two">';
-                modalBody += '<div class="row">';
-                modalBody += '<div class="col-md-6">';
-                modalBody += "<h5>Basic Information</h5>";
-                modalBody += "<p><strong>Reg No:</strong> " + detailData.regno + "</p>";
-                modalBody += "<p><strong>Year:</strong> " + detailData.year + "</p>";
-                modalBody += "<p><strong>Department:</strong> " + detailData.deptt + "</p>";
-                modalBody += "<p><strong>Associated:</strong> " + detailData.associated + "</p>";
-                modalBody += "<p><strong>DOR:</strong> " + detailData.dor + "</p>";
-                modalBody += "</div>";
-                modalBody += '<div class="col-md-6">';
-                modalBody += "<h5>Advocates</h5>";
-                modalBody += "<p><strong>Petitioner Advocate:</strong> " + detailData.padvocate + "</p>";
-                modalBody += "<p><strong>Respondent Advocate:</strong> " + detailData.radvocate + "</p>";
-                modalBody += "</div>";
-                modalBody += "</div>"; // End of row
-                modalBody += '<div class="row">';
-                modalBody += '<div class="col-md-12">';
-                modalBody += "<p><strong>Subject:</strong> " + detailData.subject + "</p>";
-                modalBody += "</div>";
-                modalBody += "</div>";
-                modalBody += '<div class="row">';
-                modalBody += '<div class="col-md-6">';
-                modalBody += "<h5>Case Information</h5>";
-                modalBody += "<p><strong>Petitioner:</strong> " + detailData.petitioner + "</p>";
-                modalBody += "<p><strong>Respondent:</strong> " + detailData.associated + "</p>";
-                modalBody += "</div>";
-                modalBody += '<div class="col-md-6">';
-                modalBody += "<h5>Court Information</h5>";
-                modalBody += "<p><strong>Court No:</strong> " + detailData.court_no + "</p>";
-                modalBody += "<p><strong>Corum:</strong> " + detailData.corum_descriptions.join(", ") + "</p>";
-                modalBody += "<p><strong>Remarks:</strong> " + detailData.remarks + "</p>";
-                modalBody += "</div>";
-                modalBody += "</div>"; // End of row
-
-                $(".modal-body").html(modalBody);
-                $("#myModal").modal("show");
+                // Check if detailData contains the required fields
+                if (detailData) {
+                    var modalTitle = "Case Details"; // Set modal title
+                    var modalBody = '<div class="container theme-dark-two">';
+                    
+                    // Basic Case Information
+                    modalBody += '<div class="row">';
+                    modalBody += '<div class="col-md-6">';
+                    modalBody += "<h5>Basic Information</h5>";
+                    modalBody += "<p><strong>Reg No:</strong> " + detailData.regno + "</p>";
+                    modalBody += "<p><strong>Year:</strong> " + detailData.year + "</p>";
+                    modalBody += "<p><strong>Department:</strong> " + detailData.deptt + "</p>";
+                    modalBody += "<p><strong>Associated:</strong> " + detailData.associated + "</p>";
+                    modalBody += "<p><strong>DOR:</strong> " + detailData.dor + "</p>";
+                    modalBody += "</div>";
+                    
+                    // Advocate Information
+                    modalBody += '<div class="col-md-6">';
+                    modalBody += "<h5>Advocates</h5>";
+                    modalBody += "<p><strong>Petitioner Advocate:</strong> " + detailData.padvocate + "</p>";
+                    modalBody += "<p><strong>Respondent Advocate:</strong> " + detailData.radvocate + "</p>";
+                    modalBody += "</div>";
+                    modalBody += "</div>"; // End of row
+    
+                    // Court Information
+                    modalBody += '<div class="row">';
+                    modalBody += '<div class="col-md-6">';
+                    modalBody += "<h5>Court Information</h5>";
+                    modalBody += "<p><strong>Court No:</strong> " + detailData.court_no + "</p>";
+                    modalBody += "<p><strong>Corum:</strong> " + detailData.corum_descriptions.join(", ") + "</p>";
+                    modalBody += "<p><strong>Remarks:</strong> " + detailData.remarks + "</p>";
+                    modalBody += "</div>";
+                    modalBody += "</div>"; // End of row
+    
+                    // Interim Judgements Section
+                    if (detailData.interim_judgements && detailData.interim_judgements.length > 0) {
+                        modalBody += '<div class="row">';
+                        modalBody += '<div class="col-md-12">';
+                        modalBody += '<h5>List of Orders</h5>';
+                        modalBody += '<div class="row">';
+    
+                        var interimJudgements = detailData.interim_judgements;
+    
+                        // Loop through interim judgements and generate buttons for each
+                        for (var i = 0; i < interimJudgements.length; i++) {
+                            var judgement = interimJudgements[i];
+                            var year = detailData.dod.split("-")[2];
+                            var month = detailData.dod.split("-")[1];
+    
+                            // Array of month names
+                            var monthNames = [
+                                "January", "February", "March", "April", "May", "June", "July",
+                                "August", "September", "October", "November", "December"
+                            ];
+    
+                            var monthName = monthNames[parseInt(month, 10) - 1];
+                            var case_type = detailData.case_type;
+                            var baseUrlD = "https://aftdelhi.nic.in/assets/disposed_cases/" + year + "/" + monthName + "/" + case_type + "/";
+                            var pdfUrlInterim = baseUrlD + encodeURIComponent(judgement.pdfname.trim());
+    
+                            // Generate buttons for each interim judgment
+                            modalBody += `<div class="col-md-3">
+                                            <button onclick="openPdf('${pdfUrlInterim}')" class="btn btn-sm btn-success mb-2">
+                                              View PDF (${judgement.dol})
+                                            </button>
+                                          </div>`;
+    
+                            // Close and open a new row every 4 buttons
+                            if ((i + 1) % 4 === 0) {
+                                modalBody += `</div><div class="row">`;
+                            }
+                        }
+    
+                        // Close the last row if it was opened
+                        if (interimJudgements.length % 4 !== 0) {
+                            modalBody += `</div>`;
+                        }
+    
+                        modalBody += '</div>';
+                        modalBody += '</div>'; // End of row for interim judgments
+                    }
+    
+                    modalBody += '</div>'; // End of container
+    
+                    // Update modal content
+                    $(".modal-body").html(modalBody);
+                    $(".modal-footer").html(`
+                        <button id="printButton" class="btn btn-primary">Print</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    `);
+    
+                    // Set modal title and show modal
+                    $("#myModalLabel").text(modalTitle);
+                    $("#myModal").modal("show");
+                }
             },
             error: function (xhr, status, error) {
-                console.error(xhr.responseText);
+                console.error("Error fetching case details: " + xhr.responseText);
             },
         });
     }
+    
+    
 
     function handleModalDataPDFClick() {
         var id = $(this).data("id");
@@ -227,6 +294,9 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+            // Show loader before fetching the data
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTableFileNumber",
@@ -259,6 +329,9 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+            // Show loader before fetching the data
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTablePartyName",
@@ -301,6 +374,9 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+            // Show loader before fetching the data
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTableAdvocate",
@@ -334,6 +410,8 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTableCaseType",
@@ -383,6 +461,8 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTableDate",
@@ -419,6 +499,8 @@ $(document).ready(function () {
                     }">PDF</button></td>
             `;
         };
+    $("#loader").show();
+
         fetchJudgements(
             url,
             "dataTableSubject",
@@ -434,39 +516,33 @@ $(document).ready(function () {
         var filters = {};
         filters.judges = $("#judges").val();
         var url = baseUrl + "?judges=" + filters.judges;
-        // var url = `{{ route('judgements.search.all') }}?subject=${filters.subject}`;
+    
         var headers = ["S No", "Reg No", "Corum", "Petitioner", "Action"];
         var rowBuilder = function (item) {
             return `
                 <td class="regno-cell">${item.regno}</td>
-                 <td class="petitioner-cell">${truncateText(
-                     item.corum,
-                     30
-                 )}</td>
-                <td class="petitioner-cell">${truncateText(
-                    item.petitioner,
-                    20
-                )}</td>
-                <td><button class="btn btn-primary btn-sm modalData" data-id="${
-                    item.id
-                }">View</button>
-                    <button class="btn btn-secondary btn-sm modalDataPDF" data-id="${
-                        item.id
-                    }">PDF</button></td>
+                <td class="corum-cell">${truncateText(item.corum_descriptions, 30)}</td>
+                <td class="petitioner-cell">${truncateText(item.petitioner, 20)}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm modalData" data-id="${item.id}">View</button>
+                    <button class="btn btn-secondary btn-sm modalDataPDF" data-id="${item.id}">PDF</button>
+                </td>
             `;
         };
+    
+        // Show the loader before fetching data
+        $("#loader").show();
+    
         fetchJudgements(
             url,
             "dataTableJudges",
-            "No data available for given search.",
+            "No data available for the given search.",
             "paginationLinksJudges",
             filters,
             headers,
             rowBuilder
         );
     });
-    
-
     $(".modalDataPDF").click(handleModalDataPDFClick);
 });
 

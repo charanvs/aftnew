@@ -46,30 +46,32 @@ class CaseManagementController extends Controller
 
     // Search by case date (DOL)
     if ($request->has('casedate')) {
-        $query->where('dol', $request->casedate);
+        // Convert the input date to match the format in your database
+        $formattedDate = Carbon::createFromFormat('Y-m-d', $request->casedate)->format('d-m-Y'); // Assuming the string in DB is 'd-m-Y'
+        $query->where('dol', $formattedDate);
     }
 
     // Search by interim_judgements based on dol
-// Search by interim_judgements dol and eager loading pdfname, also join case_dependencies for courtno and coram
-if ($request->has('searchdate')) {
-    // Filter CaseRegistrations that have related InterimJudgements with matching dol
-    $query->whereHas('interimJudgements', function ($q) use ($request) {
-        $q->where('dol', $request->searchdate);
-    })
-    ->with(['interimJudgements' => function ($q) use ($request) {
-        $q->where('dol', $request->searchdate)
-          ->select('id', 'regid', 'dol', 'pdfname'); // Select only required fields
-    }])
-    // Include CaseDependency data (courtno and coram)
-    ->with(['caseDependency' => function ($q) {
-        
-        $q->select('id', 'regid', 'courtno', 'coram'); // Select fields from CaseDependency
-    }]);
+    if ($request->has('searchdate')) {
+        // Convert the input date to match the format in your database
+        $formattedSearchDate = Carbon::createFromFormat('Y-m-d', $request->searchdate)->format('d-m-Y');
 
-}
+        // Filter CaseRegistrations that have related InterimJudgements with matching dol
+        $query->whereHas('interimJudgements', function ($q) use ($formattedSearchDate) {
+            $q->where('dol', $formattedSearchDate);
+        })
+        ->with(['interimJudgements' => function ($q) use ($formattedSearchDate) {
+            $q->where('dol', $formattedSearchDate)
+              ->select('id', 'regid', 'dol', 'pdfname'); // Select only required fields
+        }])
+        // Include CaseDependency data (courtno and coram)
+        ->with(['caseDependency' => function ($q) {
+            $q->select('id', 'regid', 'courtno', 'coram'); // Select fields from CaseDependency
+        }]);
+    }
 
     // Paginate results
-    $cases = $query->paginate(10);
+    $cases = $query->paginate(50000);
 
     return response()->json($cases);
 }

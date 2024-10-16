@@ -58,8 +58,41 @@
     }
   }
 
+  .light-mode {
+      background-color: #fff;
+      color: #000;
+  }
+
+  .dark-mode {
+      background-color: #2c2c2c;
+      color: #ffffff;
+  }
+
+  /* Button styling for dark mode */
+  .dark-mode .btn {
+      background-color: #444;
+      color: #fff;
+  }
+
+  /* Table header styling for dark mode */
+  .dark-mode th {
+      background-color: #333;
+      color: #fff;
+  }
+
+  /* Table body cell styling for dark mode */
+  .dark-mode td {
+      color: #fff;
+  }
+    /* Custom light warning color */
+    .bg-light-warning {
+        background-color: #fff3cd; /* Lighter shade of Bootstrap warning color */
+        color: #856404; /* Text color that contrasts with the background */
+    }
 </style>
 
+<!-- Loader (hidden by default) -->
+<div id="loader" class="loader" style="display:none;"></div>
 <div class="reservation-widget-area pt-60 pb-70">
   <div class="container ml-5">
     <div class="tab reservation-tab ml-5">
@@ -128,14 +161,19 @@
                               <select class="js-example-basic-single" id="judges">
                               <option value="">Please select</option>
                             @php
-                                $corum = DB::table('aft_corum')->orderBy('id', 'desc')->pluck('name', 'id'); // Fetching corum data from the database
+                                $corum = DB::table('aft_corum')->where('id', '>', '33')->orderBy('id', 'asc')->pluck('name', 'id'); // Fetching corum data from the database
+                            @endphp
+                            @foreach($corum as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                            @php
+                                $corum = DB::table('aft_corum')->where('id', '<', '34')->orderBy('id', 'desc')->pluck('name', 'id'); // Fetching corum data from the database
                             @endphp
                             @foreach($corum as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                               </select>                                  
                                  
-                              </select>
                             </div>
                           </div>
                         @elseif ($searchBy !== 'Case Type')
@@ -224,9 +262,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Details of Judgements</h5>
-        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body bg-light-warning text-white">
         <p>Modal body content goes here.</p>
       </div>
       <div class="modal-footer">

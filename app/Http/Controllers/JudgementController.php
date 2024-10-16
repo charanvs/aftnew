@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+
 use Illuminate\Http\Request;
 use App\Models\Judgement;
 use App\Models\InterimJudgement;
@@ -11,6 +12,9 @@ use App\Models\Disposed;
 use App\Models\JudgementOne;
 use App\Models\JudgementTwo;
 use App\Models\JudgementThree;
+
+use Illuminate\Support\Facades\DB; // Import DB facade
+
 
 class JudgementController extends Controller
 {
@@ -21,52 +25,71 @@ class JudgementController extends Controller
         return view('frontend.judgement2015', compact('judgements2015'));
     } // end mehtod
 
+
     public function JudgementsSearch(Request $request)
     {
         $query = Judgement::query();
-
+    
+        // Apply filters based on the request parameters
         if ($request->has('fileno')) {
             $query->where('regno', 'LIKE', '%' . $request->fileno . '%');
         }
-
+    
         if ($request->has('partyname')) {
             $query->where('petitioner', 'LIKE', '%' . $request->partyname . '%');
         }
-
+    
         if ($request->has('advocate')) {
-            $query->where('padvocate', 'LIKE', '%' . $request->advocate . '%')->orWhere('radvocate', 'LIKE', '%' . $request->advocate . '%');
+            $query->where(function ($query) use ($request) {
+                $query->where('padvocate', 'LIKE', '%' . $request->advocate . '%')
+                      ->orWhere('radvocate', 'LIKE', '%' . $request->advocate . '%');
+            });
         }
-
+    
         if ($request->has('casetype')) {
             $query->where('case_type', $request->casetype);
         }
-
+    
         if ($request->has('casedate')) {
             $query->where('dod', $request->casedate);
         }
-
+    
         if ($request->has('subject')) {
             $query->where('subject', 'LIKE', '%' . $request->subject . '%');
         }
+    
+        // Handle searching by judges and join with aft_corum table
         if ($request->has('judges')) {
             $query->where(function ($query) use ($request) {
                 $query->where('corum', 'LIKE', $request->judges)
-                    ->orWhere('corum', 'LIKE', $request->judges . ',%')
-                    ->orWhere('corum', 'LIKE', '%,' . $request->judges . ',%')
-                    ->orWhere('corum', 'LIKE', '%,' . $request->judges);
+                      ->orWhere('corum', 'LIKE', $request->judges . ',%')
+                      ->orWhere('corum', 'LIKE', '%,' . $request->judges . ',%')
+                      ->orWhere('corum', 'LIKE', '%,' . $request->judges);
             });
         }
-        
-
-        $judgements = $query->paginate(2000);
-
-        // Include corum descriptions in the response
+    
+        // Fetch judgements with pagination
+        $judgements = $query->paginate(5000); // You can adjust the pagination size as needed
+    
+        // Fetch all corum names based on the corum values
         foreach ($judgements as $judgement) {
-            $judgement->corum_descriptions;
+            // Assume `corum` field contains IDs like "1,2" and explode it into an array
+            $corumIds = explode(',', $judgement->corum);
+    
+            // Fetch corresponding corum names from aft_corum table using DB facade
+            $corumNames = DB::table('aft_corum')
+                ->whereIn('id', $corumIds)
+                ->pluck('name')
+                ->toArray();
+    
+            // Attach the corum names to the judgement object
+            $judgement->corum_descriptions = implode(', ', $corumNames); // Join the names into a single string
         }
-
+    
+        // Return the updated judgements with corum descriptions
         return response()->json($judgements);
-    } // end mehtod
+    }
+    
 
     public function WildSearch()
     {

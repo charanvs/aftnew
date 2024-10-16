@@ -25,6 +25,8 @@ use App\Http\Controllers\Util\CopyDataController;
 use App\Http\Controllers\Backend\NewRecordController;
 use App\Http\Controllers\Backend\JudgementBackendController;
 use App\Http\Controllers\Backend\ScuritinyBackendController;
+use App\Http\Controllers\Backend\OrderBackendController;
+
 
 Route::get('/', function () {
     return view('frontend.index');
@@ -136,12 +138,21 @@ Route::middleware(['auth'])->group(function () {
         // Route::post('/banner/store', 'StoreBanner')->name('banner.store');
     });
 
-    // Judgement Creation Controller
+    // Diary Creation Controller
 
     Route::controller(ScuritinyBackendController::class)->group(function () {
         Route::get('/all/diary', 'AllDiary')->name('all.diary');
         Route::get('/add/diary', 'AddDiary')->name('add.diary');
         // Route::post('/banner/store', 'StoreBanner')->name('banner.store');
+    });
+
+    Route::controller(OrderBackendController::class)->group(function () {
+        Route::get('/all/orders', 'AllOrders')->name('all.orders');
+        Route::get('/add/order/{id}/{dol}', 'AddOrder')->name('add.order');
+        Route::post('/select/orders', 'filterOrders')->name('filter.orders');
+        Route::post('/store/order', 'storeOrder')->name('store.order');
+        Route::get('/edit/order/{regno}/{dol}', 'EditOrder')->name('edit.order');
+
     });
 
 
@@ -213,3 +224,5 @@ Route::get('/events', [EventController::class, 'getEvents'])->name('events.get')
 Route::get('export/excel', [ExportController::class, 'index']);
 Route::get('/export', [ExportController::class, 'showExportForm'])->name('export.form');
 Route::post('/export', [ExportController::class, 'export'])->name('export');
+Route::get('/download-template/{fileName}', [DownloadController::class, 'downloadTemplate']);
+
